@@ -6,6 +6,14 @@
     <Nullable>enable</Nullable>
     <AssemblyName>zblesk.Helpers</AssemblyName>
     <RootNamespace>zblesk.Helpers</RootNamespace>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>zblesk.helpers</PackageId>
+    <Authors>zblesk</Authors>
+    <Company />
+    <Product>zblesk.helpers</Product>
+    <Description>My collection oft-used helpers.</Description>
+    <PackageProjectUrl>https://github.com/zblesk/helpers</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/zblesk/helpers</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
