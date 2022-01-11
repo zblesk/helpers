@@ -31,6 +31,9 @@ public static class Helper
                 .AddString("text", htmlMessage))
             .ReceiveString();
 
+    /// <summary>
+    /// Calculate the Levenstein distance between two strings.
+    /// </summary>
     public static int LevensteinDistance(string a, string b)
         => Levenstein(new Dictionary<(int, int), int>(), a, b, a.Length - 1, b.Length - 1);
 

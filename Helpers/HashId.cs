@@ -1,5 +1,8 @@
 ﻿namespace zblesk.Helpers;
 
+/// <summary>
+/// A representation of byte[] with Hash operations implemented, so it can be used as a key in hash tables.
+/// </summary>
 public sealed class HashId
 {
     public readonly byte[] Bytes;
@@ -39,9 +42,6 @@ public sealed class HashId
         return ReferenceEquals(this, obj);
     }
 
-    /// <summary>
-    /// </summary>
-    /// <returns></returns>
     /// <remarks>
     /// Ooooh, https://stackoverflow.com/a/30353296/856077
     /// If you happen to know that the byte[] arrays you're using as the key were themselves cryptographic hashes,

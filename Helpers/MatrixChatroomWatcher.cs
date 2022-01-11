@@ -4,6 +4,10 @@ using Markdig;
 
 namespace zblesk.Helpers;
 
+/// <summary>
+/// A simple watcher that calls an event for every message that arrives into a specific Matrix room.
+/// </summary>
+/// <remarks>Usage: https://zblesk.net/blog/the-simplest-matrix-chatbot-base-in-csharp/ </remarks>
 public sealed class MatrixChatroomWatcher : IDisposable
 {
     private readonly string _homeserverUrl;
@@ -16,6 +20,10 @@ public sealed class MatrixChatroomWatcher : IDisposable
     private Timer? timer;
 
     public delegate void MessageCallback(dynamic message);
+
+    /// <summary>
+    /// This event is called for each received room event.
+    /// </summary>
     public event MessageCallback? NewMessageReceived;
 
     public MatrixChatroomWatcher(string homeserverUrl, string roomId, string username, string token)
@@ -46,6 +54,11 @@ public sealed class MatrixChatroomWatcher : IDisposable
         started = false;
     }
 
+    /// <summary>
+    /// Send a message to the watched room
+    /// </summary>
+    /// <param name="message">Message to send</param>
+    /// <param name="renderMarkdown">True if the message is in MD and should be rendered before sending.</param>
     public async Task SendMessage(string message, bool renderMarkdown = true)
     {
         object body = new
@@ -75,14 +88,12 @@ public sealed class MatrixChatroomWatcher : IDisposable
         resumeToken = res.next_batch;
     }
 
-    private void FetchMessages(object? state)
+    private async Task FetchMessages(object? state)
     {
-        var request = $"{_homeserverUrl}/_matrix/client/v3/sync?access_token={_authToken}"
+        var response = await $"{_homeserverUrl}/_matrix/client/v3/sync?access_token={_authToken}"
                         .SetQueryParam("timeout", 10)
                         .SetQueryParam("since", resumeToken)
                         .GetJsonAsync();
-        request.Wait();
-        var response = request.Result;
         resumeToken = response.next_batch;
         if (((IDictionary<string, dynamic>)response).ContainsKey("rooms"))
         {
