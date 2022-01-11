@@ -1,0 +1,103 @@
+﻿using Flurl;
+using Flurl.Http;
+using Markdig;
+
+namespace zblesk.Helpers;
+
+public sealed class MatrixChatroomWatcher : IDisposable
+{
+    private readonly string _homeserverUrl;
+    private readonly string _username;
+    private readonly string _roomId;
+    private readonly string _authToken;
+
+    private string resumeToken = "";
+    private bool started = false;
+    private Timer? timer;
+
+    public delegate void MessageCallback(dynamic message);
+    public event MessageCallback? NewMessageReceived;
+
+    public MatrixChatroomWatcher(string homeserverUrl, string roomId, string username, string token)
+    {
+        if (string.IsNullOrEmpty(homeserverUrl))
+            throw new ArgumentException($"'{nameof(homeserverUrl)}' cannot be null or empty.", nameof(homeserverUrl));
+
+        _homeserverUrl = homeserverUrl.TrimEnd('/');
+        _username = username ?? throw new ArgumentException($"'{nameof(username)}' cannot be null or empty.", nameof(username));
+        _roomId = roomId ?? throw new ArgumentException($"'{nameof(roomId)}' cannot be null or empty.", nameof(roomId));
+        _authToken = token ?? throw new ArgumentException($"'{nameof(token)}' cannot be null or empty.", nameof(token));
+    }
+
+    public async Task Start()
+    {
+        if (started)
+            return;
+        await InitializeSync();
+        started = true;
+        timer = new Timer(FetchMessages, null, 100, 1000);
+    }
+
+    public void Stop()
+    {
+        if (!started)
+            return;
+        timer?.Change(Timeout.Infinite, 0);
+        started = false;
+    }
+
+    public async Task SendMessage(string message, bool renderMarkdown = true)
+    {
+        object body = new
+        {
+            msgtype = "m.text",
+            body = message,
+        };
+        if (renderMarkdown)
+            body = new
+            {
+                msgtype = "m.text",
+                body = message,
+                format = "org.matrix.custom.html",
+                formatted_body = Markdown.ToHtml(message),
+            };
+        await $"{_homeserverUrl}/_matrix/client/r0/rooms/{_roomId}/send/m.room.message?access_token={_authToken}"
+                            .PostJsonAsync(body);
+    }
+
+    public void Dispose()
+        => timer?.Dispose();
+
+    private async Task InitializeSync()
+    {
+        var res = await $"{_homeserverUrl}/_matrix/client/v3/sync?access_token={_authToken}"
+                            .GetJsonAsync();
+        resumeToken = res.next_batch;
+    }
+
+    private void FetchMessages(object? state)
+    {
+        var request = $"{_homeserverUrl}/_matrix/client/v3/sync?access_token={_authToken}"
+                        .SetQueryParam("timeout", 10)
+                        .SetQueryParam("since", resumeToken)
+                        .GetJsonAsync();
+        request.Wait();
+        var response = request.Result;
+        resumeToken = response.next_batch;
+        if (((IDictionary<string, dynamic>)response).ContainsKey("rooms"))
+        {
+            var r = (IDictionary<string, dynamic>)response.rooms.join;
+            if (r.ContainsKey(_roomId))
+            {
+                var events = r[_roomId]?.timeline?.events;
+                if (events == null)
+                    return;
+                foreach (var roomEvent in events)
+                {
+                    if (roomEvent.sender != _username)
+                        NewMessageReceived?.Invoke(roomEvent);
+                }
+            }
+        }
+    }
+}
