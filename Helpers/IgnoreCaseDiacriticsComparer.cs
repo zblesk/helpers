@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace zblesk.Helpers;
+﻿namespace zblesk.Helpers;
 
 /// <summary>
 /// An invariant-culture string comparer that ignores diacritics.

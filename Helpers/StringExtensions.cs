@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using System.Text;
-
-namespace zblesk.Helpers;
+﻿namespace zblesk.Helpers;
 
 public static class StringExtensions
 {

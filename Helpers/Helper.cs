@@ -1,6 +1,4 @@
-﻿using Flurl.Http;
-
-namespace zblesk.Helpers;
+﻿namespace zblesk.Helpers;
 
 public static class Helper
 {

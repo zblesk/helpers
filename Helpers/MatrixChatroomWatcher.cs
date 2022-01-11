@@ -88,12 +88,14 @@ public sealed class MatrixChatroomWatcher : IDisposable
         resumeToken = res.next_batch;
     }
 
-    private async Task FetchMessages(object? state)
+    private void FetchMessages(object? state)
     {
-        var response = await $"{_homeserverUrl}/_matrix/client/v3/sync?access_token={_authToken}"
+        var request = $"{_homeserverUrl}/_matrix/client/v3/sync?access_token={_authToken}"
                         .SetQueryParam("timeout", 10)
                         .SetQueryParam("since", resumeToken)
                         .GetJsonAsync();
+        request.Wait();
+        var response = request.Result;
         resumeToken = response.next_batch;
         if (((IDictionary<string, dynamic>)response).ContainsKey("rooms"))
         {
