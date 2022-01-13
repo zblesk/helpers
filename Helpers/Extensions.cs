@@ -1,4 +1,7 @@
-﻿namespace zblesk.Helpers;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+
+namespace zblesk.Helpers;
 
 public static class Extensions
 {
@@ -18,4 +21,23 @@ public static class Extensions
     /// <returns>Min, max, or number if min <= number <= max.</returns>
     public static int Clamp(this int number, int min, int max)
         => Math.Min(max, Math.Max(min, number));
+
+    /// <summary>
+    /// Check if a Role exists, and if it doesn't, create it with the provided claims.
+    /// </summary>
+    public static async Task EnsureRoleExists(
+        this RoleManager<IdentityRole> roleManager,
+        string roleName,
+        params Claim[] claims)
+    {
+        var role = await roleManager.FindByNameAsync(roleName);
+        if (role == null)
+        {
+            role = new IdentityRole(roleName);
+            await roleManager.CreateAsync(role);
+            if (claims?.Length > 0)
+                Task.WaitAll(
+                    claims.Select(claim => roleManager.AddClaimAsync(role, claim)).ToArray());
+        }
+    }
 }
