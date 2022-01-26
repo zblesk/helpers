@@ -30,6 +30,20 @@ public static class Helper
             .ReceiveString();
 
     /// <summary>
+    /// Get the mimetype for a file extension
+    /// </summary>
+    public static string ExtensionToMime(string extension)
+        => extension switch
+        {
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            ".bmp" => "image/bmp",
+            ".webp" => "image/webp",
+            ".webm" => "video/webm",
+            _ => "image/jpeg",
+        };
+
+    /// <summary>
     /// Calculate the Levenstein distance between two strings.
     /// </summary>
     public static int LevensteinDistance(string a, string b)
