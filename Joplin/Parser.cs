@@ -27,11 +27,12 @@ internal class Parser
         if (_queryText == null)
         {
             _queryText = Parse(_expression);
-            _fields = string.Join(
-                ',',
-                _fieldList.Count == 0
+            if (_fieldList.Count > 0
+                && !_fieldList.Contains("id"))
+                _fieldList.Add("id");
+            _fields = _fieldList.Count == 0
                     ? DefaultFieldset[typeof(T)]
-                    : string.Join(',', _fieldList));
+                    : string.Join(',', _fieldList);
         }
         return (_queryText, _fields);
     }
@@ -69,13 +70,18 @@ internal class Parser
         if (ex.Method.Name == "Select")
         {
             var operand = ((UnaryExpression)ex.Arguments[1]).Operand;
-            var bindings = ((dynamic)operand).Body.Bindings;
-            foreach (var member in bindings)
+            if ((operand as dynamic).Body is NewExpression)
             {
-                var fieldName = ((member as MemberAssignment).Expression as MemberExpression).Member.Name;
-                _fieldList.Add(fieldName);
+                var newExpr = (operand as dynamic).Body as NewExpression;
+                _fieldList.AddRange(newExpr.Arguments.Select(arg => (arg as MemberExpression).Member.Name));
+                return Parse(ex.Arguments[0]);
             }
-            return Parse(ex.Arguments[0]);
+            else if ((operand as dynamic).Body is MemberInitExpression)
+            {
+                var initExpr = ((dynamic)operand).Body as MemberInitExpression;
+                _fieldList.AddRange(initExpr.Bindings.Select(b => b.Member.Name));
+                return Parse(ex.Arguments[0]);
+            }
         }
         throw new InvalidOperationException($"Unknown method: {ex.Method.Name}");
     }

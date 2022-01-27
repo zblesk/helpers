@@ -1,5 +1,8 @@
-﻿namespace zblesk.Joplin.Poco;
+﻿using System.Diagnostics;
 
+namespace zblesk.Joplin.Poco;
+
+[DebuggerDisplay("{title} ({id,nq})")]
 public class Note
 {
     public string? id { get; set; }
@@ -33,4 +36,9 @@ public class Note
     public string? base_url { get; set; }
     public string? image_data_url { get; set; }
     public string? crop_rect { get; set; }
+
+    private string GetDebuggerDisplay()
+    {
+        return ToString();
+    }
 }

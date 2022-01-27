@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>zblesk.Joplin</RootNamespace>
+    <AssemblyName>zblesk.Joplin</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
