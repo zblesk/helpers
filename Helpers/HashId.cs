@@ -14,9 +14,9 @@ public sealed class HashId
 
     public HashId(string hexRepresentation)
     {
-        int length = hexRepresentation.Length;
+        var length = hexRepresentation.Length;
         Bytes = new byte[length / 2];
-        for (int i = 0; i < length; i += 2)
+        for (var i = 0; i < length; i += 2)
         {
             Bytes[i / 2] = Convert.ToByte(hexRepresentation.Substring(i, 2), 16);
         }
@@ -30,7 +30,7 @@ public sealed class HashId
             {
                 return false;
             }
-            for (int i = 0; i < Bytes.Length; i++)
+            for (var i = 0; i < Bytes.Length; i++)
             {
                 if (Bytes[i] != hashId.Bytes[i])
                 {
