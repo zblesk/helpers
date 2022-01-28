@@ -11,17 +11,34 @@ internal class Parser
     readonly Expression _expression;
     string? _queryText, _fields;
 
+    static readonly ReadOnlyDictionary<Type, string> DefaultFieldset =
+        new(new Dictionary<Type, string>
+            {
+                { typeof(Note), Note.DefaultFetchFields },
+                { typeof(Notebook), Notebook.DefaultFetchFields },
+            });
+
+
+    static readonly ReadOnlyDictionary<Type, string> DefaultApiPaths =
+        new(new Dictionary<Type, string>
+            {
+                { typeof(Note), Note.EntityApiPath },
+                { typeof(Notebook), Notebook.EntityApiPath },
+            });
+
     public Parser(Expression expression)
     {
         _expression = expression;
     }
 
-    public (string query, string fields) GetQuery(Type type)
+    public (string query, string fields, string endpoint) GetQuery(Type type)
     {
+        var endpoint = "search";
         if (_queryText == null)
         {
             _queryText = Parse(_expression);
-
+            if (_queryText.Length == 0)
+                endpoint = DefaultApiPaths[type];
 
             if (_fieldList.Count > 0
                 && !_fieldList.Contains("id"))
@@ -30,7 +47,7 @@ internal class Parser
                     ? DefaultFieldset[type]
                     : string.Join(',', _fieldList);
         }
-        return (_queryText, _fields);
+        return (_queryText, _fields ?? "", endpoint);
     }
 
     string Parse(Expression ex)
@@ -79,6 +96,7 @@ internal class Parser
                 _fieldList.AddRange(initExpr.Bindings.Select(b => b.Member.Name));
                 return Parse(ex.Arguments[0]);
             }
+            return Parse(ex.Arguments[0]);
         }
         throw new InvalidOperationException($"Unknown method: {ex.Method.Name}");
     }

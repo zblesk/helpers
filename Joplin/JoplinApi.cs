@@ -22,7 +22,7 @@ public class JoplinApi
         _token = token;
         _url = $"http://localhost:{port}";
 
-        Notes = new Query<Note>(new JoplinQueryProvider(this, typeof(Note)));
+      //  Notes = new Query<Note>(new JoplinQueryProvider(this, typeof(Note)));
         Notebooks = new Query<Notebook>(new JoplinQueryProvider(this, typeof(Notebook)));
     }
 
@@ -91,21 +91,23 @@ public class JoplinApi
         .SetQueryParam("fields", "*")
         .GetJsonAsync();
 
-    public async Task<List<Note>> Search(string query, string fields)
+    public List<T> Search<T>(string query, string fields, string endpoint)
+        where T : JoplinData
     {
-        var url = MakeUrl("search")
+        var url = MakeUrl(endpoint)
             .SetQueryParam("query", query)
             .SetQueryParam("fields", fields);
-        var q = await url.GetJsonAsync();
+        var q = url.GetJsonAsync();
+        q.Wait();
 
-        var r = new List<Note>();
+        var r = new List<T>();
 
-        var config = new MapperConfiguration(cfg => cfg.CreateMap<Note, dynamic>());
+        var config = new MapperConfiguration(cfg => cfg.CreateMap<T, dynamic>());
         var map = config.CreateMapper();
 
-        foreach (var element in q.items)
+        foreach (var element in q.Result.items)
         {
-            Note n = map.Map<Note>(element);
+            T n = map.Map<T>(element);
             r.Add(n);
         }
         return r;

@@ -34,8 +34,8 @@ public class Note : JoplinData
     public string? image_data_url { get; set; }
     public string? crop_rect { get; set; }
 
-    public override string DefaultFetchFields => "id,parent_id,title,body,created_time,updated_time,is_conflict,latitude,longitude,altitude,author,source_url,is_todo,todo_due,todo_completed,source,source_application,application_data,order,user_created_time,user_updated_time,encryption_applied,encryption_cipher_text,markup_language,is_shared,share_id,conflict_original_id,master_key_id";
+    public const string DefaultFetchFields = "id,parent_id,title,body,created_time,updated_time,is_conflict,latitude,longitude,altitude,author,source_url,is_todo,todo_due,todo_completed,source,source_application,application_data,order,user_created_time,user_updated_time,encryption_applied,encryption_cipher_text,markup_language,is_shared,share_id,conflict_original_id,master_key_id";
 
-    public override string EntityApiPath => "notes";
+    public  const string EntityApiPath = "notes";
 
 }

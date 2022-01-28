@@ -4,7 +4,7 @@ using zblesk.Joplin.Poco;
 
 namespace zblesk.Joplin;
 
-public class Query<T> : IQueryable<T>, IQueryable, IEnumerable<T>, IOrderedQueryable<T>, IOrderedQueryable
+public class Query<T> : IQueryable<T>, IQueryable, IOrderedQueryable<T>, IOrderedQueryable
 {
     readonly JoplinQueryProvider _provider;
     readonly Expression _expression;
