@@ -3,14 +3,12 @@
 namespace zblesk.Joplin.Poco;
 
 [DebuggerDisplay("{title} ({id,nq})")]
-public class Note
+public class Note : JoplinData
 {
     public string? id { get; set; }
     public string? parent_id { get; set; }
     public string? title { get; set; }
     public string? body { get; set; }
-    public ulong? created_time { get; set; }
-    public ulong? updated_time { get; set; }
     public bool? is_conflict { get; set; }
     public string? latitude { get; set; }
     public string? longitude { get; set; }
@@ -24,9 +22,8 @@ public class Note
     public string? source_application { get; set; }
     public string? application_data { get; set; }
     public string? order { get; set; }
-    public ulong? user_created_time { get; set; }
-    public ulong? user_updated_time { get; set; }
     public int? encryption_applied { get; set; }
+    public string? encryption_cipher_text { get; set; }
     public int? markup_language { get; set; }
     public bool? is_shared { get; set; }
     public string? share_id { get; set; }
@@ -37,8 +34,8 @@ public class Note
     public string? image_data_url { get; set; }
     public string? crop_rect { get; set; }
 
-    private string GetDebuggerDisplay()
-    {
-        return ToString();
-    }
+    public override string DefaultFetchFields => "id,parent_id,title,body,created_time,updated_time,is_conflict,latitude,longitude,altitude,author,source_url,is_todo,todo_due,todo_completed,source,source_application,application_data,order,user_created_time,user_updated_time,encryption_applied,encryption_cipher_text,markup_language,is_shared,share_id,conflict_original_id,master_key_id";
+
+    public override string EntityApiPath => "notes";
+
 }

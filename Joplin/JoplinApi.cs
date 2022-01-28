@@ -14,6 +14,7 @@ public class JoplinApi
     readonly int _defaultPageSize = 100;
 
     public Query<Note> Notes;
+    public Query<Notebook> Notebooks;
 
     public JoplinApi(string token, int port = 41184)
     {
@@ -21,8 +22,21 @@ public class JoplinApi
         _token = token;
         _url = $"http://localhost:{port}";
 
-        var provider = new JoplinQueryProvider(this);
-        Notes = new Query<Note>(provider);
+        Notes = new Query<Note>(new JoplinQueryProvider(this, typeof(Note)));
+        Notebooks = new Query<Notebook>(new JoplinQueryProvider(this, typeof(Notebook)));
+    }
+
+    public async Task<bool> IsReady()
+    {
+        try
+        {
+            await MakeUrl("ping").GetAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task<List<Notebook>> GetAllNotebooks()
@@ -37,12 +51,12 @@ public class JoplinApi
             cont = (bool)response.has_more;
             foreach (var ntb in response.items)
             {
-                results.Add(new Notebook
-                {
-                    NotebookId = (string)ntb.id,
-                    ParentId = (string)ntb.parent_id,
-                    Title = (string)ntb.title,
-                });
+                //results.Add(new Notebook
+                //{
+                //    NotebookId = (string)ntb.id,
+                //    ParentId = (string)ntb.parent_id,
+                //    Title = (string)ntb.title,
+                //});
             }
         } while (cont);
         return results;

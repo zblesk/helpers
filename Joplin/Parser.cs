@@ -11,27 +11,23 @@ internal class Parser
     readonly Expression _expression;
     string? _queryText, _fields;
 
-    static readonly ReadOnlyDictionary<Type, string> DefaultFieldset =
-        new(new Dictionary<Type, string>
-            {
-                { typeof(Note), "id,parent_id,title,body,created_time,updated_time,is_conflict,latitude,longitude,altitude,author,source_url,is_todo,todo_due,todo_completed,source,source_application,application_data,order,user_created_time,user_updated_time,encryption_applied,markup_language,is_shared,share_id,conflict_original_id,master_key_id"}
-            });
-
     public Parser(Expression expression)
     {
         _expression = expression;
     }
 
-    public (string query, string fields) GetQuery<T>()
+    public (string query, string fields) GetQuery(Type type)
     {
         if (_queryText == null)
         {
             _queryText = Parse(_expression);
+
+
             if (_fieldList.Count > 0
                 && !_fieldList.Contains("id"))
                 _fieldList.Add("id");
             _fields = _fieldList.Count == 0
-                    ? DefaultFieldset[typeof(T)]
+                    ? DefaultFieldset[type]
                     : string.Join(',', _fieldList);
         }
         return (_queryText, _fields);
@@ -74,6 +70,7 @@ internal class Parser
             {
                 var newExpr = (operand as dynamic).Body as NewExpression;
                 _fieldList.AddRange(newExpr.Arguments.Select(arg => (arg as MemberExpression).Member.Name));
+                // won't help, since I still can't return an anon type :( 
                 return Parse(ex.Arguments[0]);
             }
             else if ((operand as dynamic).Body is MemberInitExpression)
@@ -95,7 +92,7 @@ internal class Parser
             return ex.Value.ToString();
         if (ex.Type == typeof(bool))
             return ((bool)ex.Value) ? "1" : "0";
-        return $"Unknown type {ex.Type}";
+        return "";
     }
 
     string Operation(ExpressionType op)
