@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>zblesk.Helpers.Web</AssemblyName>
+    <RootNamespace>zblesk.Helpers.Web</RootNamespace>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>zblesk.helpers.web</PackageId>
+    <Authors>zblesk</Authors>
+    <Company />
+    <Product>zblesk.helpers.web</Product>
+    <Description>My collection oft-used helpers with web-related dependencies.</Description>
+    <PackageProjectUrl>https://github.com/zblesk/helpers</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/zblesk/helpers</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.1" />
+  </ItemGroup>
+
+</Project>

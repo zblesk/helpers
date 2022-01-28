@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -14,15 +14,13 @@
     <Description>My collection oft-used helpers.</Description>
     <PackageProjectUrl>https://github.com/zblesk/helpers</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zblesk/helpers</RepositoryUrl>
-    <Version>1.0.1</Version>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="flurl" Version="3.0.2" />
     <PackageReference Include="flurl.http" Version="3.2.0" />
     <PackageReference Include="markdig" Version="0.26.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.1" />
   </ItemGroup>
 
 </Project>
