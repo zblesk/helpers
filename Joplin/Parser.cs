@@ -37,6 +37,8 @@ internal class Parser
         if (_queryText == null)
         {
             _queryText = Parse(_expression);
+
+            // If there is a query, search. If not, go to the standard endpoint to get all objects.zs
             if (_queryText.Length == 0)
                 endpoint = DefaultApiPaths[type];
 
@@ -46,6 +48,9 @@ internal class Parser
             _fields = _fieldList.Count == 0
                     ? DefaultFieldset[type]
                     : string.Join(',', _fieldList);
+
+            // Joplin's naming differs here: it's `source_url` on a note, but `sourceurl` as a search param.
+            _queryText = _queryText.Replace("source_url", "sourceurl");
         }
         return (_queryText, _fields ?? "", endpoint);
     }
@@ -72,7 +77,12 @@ internal class Parser
 
     string Parse(MemberExpression ex) => $"{ex.Member.Name}";
 
-    string Parse(UnaryExpression ex) => Parse(ex.Operand);
+    string Parse(UnaryExpression ex)
+        => ex.NodeType switch
+        {
+            ExpressionType.Not => "-" + Parse(ex.Operand),
+            _ => Parse(ex.Operand)
+        };
 
     string Parse(LambdaExpression ex) => Parse(ex.Body);
 
@@ -98,6 +108,7 @@ internal class Parser
             }
             return Parse(ex.Arguments[0]);
         }
+        return Parse(ex.Arguments[0]);
         throw new InvalidOperationException($"Unknown method: {ex.Method.Name}");
     }
 

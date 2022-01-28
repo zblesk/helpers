@@ -43,11 +43,8 @@ public class JoplinQueryProvider : IQueryProvider
     public object Execute(Expression expression)
     {
         var (query, fields, endpoint) = new Parser(expression).GetQuery(_type);
-        var mi = typeof(JoplinApi).GetMethod("Search");
-        var fooRef = mi.MakeGenericMethod(_type);
-        var r = fooRef.Invoke(_joplinApi, new[] { query, fields, endpoint });
-        //var r = _joplinApi.Search(query, fields, endpoint);
-       // r.Wait();
-        return r;
+        var searchMethod = typeof(JoplinApi).GetMethod("Search").MakeGenericMethod(_type);
+        var result = searchMethod.Invoke(_joplinApi, new[] { query, fields, endpoint });
+        return result;
     }
 }

@@ -22,7 +22,7 @@ public class JoplinApi
         _token = token;
         _url = $"http://localhost:{port}";
 
-      //  Notes = new Query<Note>(new JoplinQueryProvider(this, typeof(Note)));
+        Notes = new Query<Note>(new JoplinQueryProvider(this, typeof(Note)));
         Notebooks = new Query<Notebook>(new JoplinQueryProvider(this, typeof(Notebook)));
     }
 
