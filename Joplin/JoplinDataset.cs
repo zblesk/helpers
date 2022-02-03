@@ -1,21 +1,20 @@
 ﻿using System.Collections;
 using System.Linq.Expressions;
-using zblesk.Joplin.Poco;
 
 namespace zblesk.Joplin;
 
-public class Query<T> : IQueryable<T>, IQueryable, IOrderedQueryable<T>, IOrderedQueryable
+public class JoplinDataset<T> : IQueryable<T>, IQueryable, IOrderedQueryable<T>, IOrderedQueryable
 {
     readonly JoplinQueryProvider _provider;
     readonly Expression _expression;
 
-    public Query(JoplinQueryProvider provider)
+    public JoplinDataset(JoplinQueryProvider provider)
     {
         _provider = provider ?? throw new ArgumentNullException(nameof(provider));
         _expression = Expression.Constant(this);
     }
 
-    public Query(JoplinQueryProvider provider, Expression expression)
+    public JoplinDataset(JoplinQueryProvider provider, Expression expression)
     {
         if (expression == null)
         {

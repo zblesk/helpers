@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace zblesk.Joplin.Poco;
+namespace zblesk.Joplin;
 
 [DebuggerDisplay("Notebook {title} ({id,nq})")]
 public class Notebook : JoplinData
@@ -15,7 +15,7 @@ public class Notebook : JoplinData
     public string? master_key_id { get; set; }
     public string? icon { get; set; }
 
-    public const string DefaultFetchFields = "id,title,created_time,updated_time,user_created_time,user_updated_time,encryption_cipher_text,encryption_applied,parent_id,is_shared,share_id,master_key_id,icon";
+    public override string DefaultFetchFields => "id,title,created_time,updated_time,user_created_time,user_updated_time,encryption_cipher_text,encryption_applied,parent_id,is_shared,share_id,master_key_id,icon";
 
-    public const string EntityApiPath = "folders";
+    public override string EntityApiPath => "folders";
 }

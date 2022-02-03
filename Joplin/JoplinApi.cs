@@ -2,7 +2,6 @@
 using AutoMapper;
 using Flurl;
 using Flurl.Http;
-using zblesk.Joplin.Poco;
 
 namespace zblesk.Joplin;
 
@@ -13,8 +12,8 @@ public class JoplinApi
     readonly string _url;
     readonly int _defaultPageSize = 100;
 
-    public Query<Note> Notes;
-    public Query<Notebook> Notebooks;
+    public JoplinDataset<Note> Notes;
+    public JoplinDataset<Notebook> Notebooks;
 
     public JoplinApi(string token, int port = 41184)
     {
@@ -22,8 +21,8 @@ public class JoplinApi
         _token = token;
         _url = $"http://localhost:{port}";
 
-        Notes = new Query<Note>(new JoplinQueryProvider(this, typeof(Note)));
-        Notebooks = new Query<Notebook>(new JoplinQueryProvider(this, typeof(Notebook)));
+        Notes = new JoplinDataset<Note>(new JoplinQueryProvider(this, typeof(Note)));
+        Notebooks = new JoplinDataset<Notebook>(new JoplinQueryProvider(this, typeof(Notebook)));
     }
 
     public async Task<bool> IsReady()
@@ -62,35 +61,6 @@ public class JoplinApi
         return results;
     }
 
-    public async Task<string> CreateMarkdownNote(string notebookId, string title, string body, string url = null, NoteType type = NoteType.Text) 
-        => await MakeUrl("notes")
-            .PostJsonAsync(new
-            {
-                title = title,
-                body = body,
-                parent_id = notebookId,
-                source_url = url,
-                is_todo = (int)type,
-            })
-            .ReceiveString();
-
-    public async Task<string> CreateHtmlNote(string notebookId, string title, string body, string url = null, NoteType type = NoteType.Text) 
-        => await MakeUrl("notes")
-            .PostJsonAsync(new
-            {
-                title = title,
-                body_html = body,
-                parent_id = notebookId,
-                source_url = url,
-                is_todo = (int)type,
-            })
-            .ReceiveString();
-
-    public Task<dynamic> GetNote(string noteId)
-        => MakeUrl("notes", noteId)
-        .SetQueryParam("fields", "*")
-        .GetJsonAsync();
-
     public List<T> Search<T>(string query, string fields, string endpoint)
         where T : JoplinData
     {
@@ -112,6 +82,25 @@ public class JoplinApi
         }
         return r;
     }
+
+    public Task<T> Add<T>(T item)
+        where T : JoplinData
+        => MakeUrl(item.EntityApiPath)
+            .PostJsonAsync(item)
+            .ReceiveJson<T>();
+
+    public Task<T> Update<T>(T item)
+        where T : JoplinData
+        => MakeUrl(item.EntityApiPath)
+            .AppendPathSegment(item.id)
+            .PutJsonAsync(item)
+            .ReceiveJson<T>();
+
+    public Task Delete<T>(T item)
+        where T : JoplinData
+        => MakeUrl(item.EntityApiPath)
+            .AppendPathSegment(item.id)
+            .DeleteAsync();
 
     private string MakeUrl(string path) => _url.AppendPathSegment(path).SetQueryParam("token", _token);
     private string MakeUrl(params string[] path) => _url.AppendPathSegments(path).SetQueryParam("token", _token);

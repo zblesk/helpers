@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using zblesk.Joplin.Poco;
 
 namespace zblesk.Joplin;
 
@@ -14,16 +13,16 @@ internal class Parser
     static readonly ReadOnlyDictionary<Type, string> DefaultFieldset =
         new(new Dictionary<Type, string>
             {
-                { typeof(Note), Note.DefaultFetchFields },
-                { typeof(Notebook), Notebook.DefaultFetchFields },
+                { typeof(Note), new Note().DefaultFetchFields },
+                { typeof(Notebook), new Notebook().DefaultFetchFields },
             });
 
 
     static readonly ReadOnlyDictionary<Type, string> DefaultApiPaths =
         new(new Dictionary<Type, string>
             {
-                { typeof(Note), Note.EntityApiPath },
-                { typeof(Notebook), Notebook.EntityApiPath },
+                { typeof(Note), new Note().EntityApiPath },
+                { typeof(Notebook), new Notebook().EntityApiPath },
             });
 
     public Parser(Expression expression)

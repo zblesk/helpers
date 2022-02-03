@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using zblesk.Joplin;
 using System.Linq;
-using zblesk.Joplin.Poco;
 using System.Threading.Tasks;
 
 namespace Tests;
@@ -26,12 +25,19 @@ public class UnitTest1
 
     private async Task test(JoplinApi api)
     {
-        Assert.IsNotNull(api);
-        Assert.IsTrue(await api.IsReady())
-;
         var w = from n in api.Notes
-                //where n.id == "00000000000031337000000000000001"
+                where n.source_url == "https://zble.sk" & !(n.latitude == "55")
                 select new Note { title = n.title, is_conflict = n.is_conflict, latitude = n.latitude, author = n.author, body = n.body };
+
         var ee = w.ToList();
+
+
+        return;
+        var we = (from n in api.Notebooks
+                  select new { n.title })
+                .ToList();
+
+        Assert.IsNotNull(api);
+        Assert.IsTrue(await api.IsReady());
     }
 }

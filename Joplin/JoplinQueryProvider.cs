@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using zblesk.Joplin.Poco;
 
 namespace zblesk.Joplin;
 
@@ -16,14 +15,14 @@ public class JoplinQueryProvider : IQueryProvider
     }
 
     IQueryable<S> IQueryProvider.CreateQuery<S>(Expression expression)
-        => new Query<S>(this, expression);
+        => new JoplinDataset<S>(this, expression);
 
     IQueryable IQueryProvider.CreateQuery(Expression expression)
     {
         var elementType = TypeSystem.GetElementType(expression.Type);
         try
         {
-            return (IQueryable)Activator.CreateInstance(typeof(Query<>).MakeGenericType(elementType), new object[] { this, expression });
+            return (IQueryable)Activator.CreateInstance(typeof(JoplinDataset<>).MakeGenericType(elementType), new object[] { this, expression });
         }
         catch (TargetInvocationException tie)
         {

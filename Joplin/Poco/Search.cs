@@ -1,4 +1,4 @@
-﻿namespace zblesk.Joplin.Poco;
+﻿namespace zblesk.Joplin;
 
 public class Search
 {
