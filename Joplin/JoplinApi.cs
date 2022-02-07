@@ -102,6 +102,12 @@ public class JoplinApi
             .AppendPathSegment(item.id)
             .DeleteAsync();
 
+    public Task Delete<T>(string id)
+        where T : JoplinData, new()
+        => MakeUrl(new T().EntityApiPath)
+            .AppendPathSegment(id)
+            .DeleteAsync();
+
     private string MakeUrl(string path) => _url.AppendPathSegment(path).SetQueryParam("token", _token);
     private string MakeUrl(params string[] path) => _url.AppendPathSegments(path).SetQueryParam("token", _token);
     private string AddPaging(string url, int page) => url.SetQueryParams(new { limit = _defaultPageSize, page = page });
