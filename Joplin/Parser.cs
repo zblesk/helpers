@@ -115,10 +115,14 @@ internal class Parser
             _page = 1;
             _pageSize = 1;
             _resultKind = ResultKind.Single;
-            return Parse(ex.Arguments[0]);
+        }
+        if (ex.Method.Name == "Any")
+        {
+            _page = 1;
+            _pageSize = 1;
+            _resultKind = ResultKind.Any;
         }
         return Parse(ex.Arguments[0]);
-        throw new InvalidOperationException($"Unknown method: {ex.Method.Name}");
     }
 
     string Parse(ConstantExpression ex)
