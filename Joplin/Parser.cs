@@ -9,6 +9,9 @@ internal class Parser
     readonly List<string> _fieldList = new();
     readonly Expression _expression;
     string? _queryText, _fields;
+    int _pageSize = 100;
+    int? _page = null;
+    ResultKind _resultKind = ResultKind.List;
 
     static readonly ReadOnlyDictionary<Type, string> DefaultFieldset =
         new(new Dictionary<Type, string>
@@ -30,7 +33,7 @@ internal class Parser
         _expression = expression;
     }
 
-    public (string query, string fields, string endpoint) GetQuery(Type type)
+    public ParseResults GetQuery(Type type)
     {
         var endpoint = "search";
         if (_queryText == null)
@@ -51,7 +54,7 @@ internal class Parser
             // Joplin's naming differs here: it's `source_url` on a note, but `sourceurl` as a search param.
             _queryText = _queryText.Replace("source_url", "sourceurl");
         }
-        return (_queryText, _fields ?? "", endpoint);
+        return new ParseResults(_queryText, _fields ?? "", endpoint, _resultKind, _pageSize, _page);
     }
 
     string Parse(Expression ex)
@@ -105,6 +108,13 @@ internal class Parser
                 _fieldList.AddRange(initExpr.Bindings.Select(b => b.Member.Name));
                 return Parse(ex.Arguments[0]);
             }
+            return Parse(ex.Arguments[0]);
+        }
+        if (new[] { "First", "FirstOrDefault" }.Contains(ex.Method.Name))
+        {
+            _page = 1;
+            _pageSize = 1;
+            _resultKind = ResultKind.Single;
             return Parse(ex.Arguments[0]);
         }
         return Parse(ex.Arguments[0]);

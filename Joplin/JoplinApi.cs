@@ -60,13 +60,13 @@ public class JoplinApi
         } while (cont);
         return results;
     }
-
-    public List<T> Search<T>(string query, string fields, string endpoint)
+    
+    public object Search<T>(ParseResults searchCriteria)
         where T : JoplinData
     {
-        var url = MakeUrl(endpoint)
-            .SetQueryParam("query", query)
-            .SetQueryParam("fields", fields);
+        var url = MakeUrl(searchCriteria.endpoint)
+            .SetQueryParam("query", searchCriteria.query)
+            .SetQueryParam("fields", searchCriteria.fields);
         var q = url.GetJsonAsync();
         q.Wait();
 
@@ -80,6 +80,9 @@ public class JoplinApi
             T n = map.Map<T>(element);
             r.Add(n);
         }
+
+        if (searchCriteria.kind == ResultKind.Single)
+            return r.FirstOrDefault();
         return r;
     }
 
