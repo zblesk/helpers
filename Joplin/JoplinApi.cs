@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using Flurl;
 using Flurl.Http;
 
@@ -60,13 +59,15 @@ public class JoplinApi
         } while (cont);
         return results;
     }
-    
+
     public object Search<T>(ParseResults searchCriteria)
         where T : JoplinData
     {
         var url = MakeUrl(searchCriteria.endpoint)
             .SetQueryParam("query", searchCriteria.query)
-            .SetQueryParam("fields", searchCriteria.fields);
+            .SetQueryParam("fields", searchCriteria.fields)
+            .SetQueryParam("type", searchCriteria.searchType);
+        Console.WriteLine(url);
         var q = url.GetJsonAsync();
         q.Wait();
 

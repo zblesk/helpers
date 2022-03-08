@@ -21,4 +21,14 @@ public abstract class JoplinData
 
     public abstract string EntityApiPath { get; }
     public abstract string DefaultFetchFields { get; }
+    public abstract string SearchType { get; }
+
+
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public DateTime? CreatedTime
+    {
+        get => Helpers.DateExtensions.FromUnixTimestamp((long)created_time);
+        set => created_time = (ulong)Helpers.DateExtensions.ToUnixTimestamp((DateTime)value);
+    }
+
 }

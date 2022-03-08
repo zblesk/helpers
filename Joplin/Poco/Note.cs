@@ -92,4 +92,6 @@ public class Note : JoplinData
 
     public override string EntityApiPath => "notes";
 
+    public override string SearchType => "note";
+
 }

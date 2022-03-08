@@ -20,12 +20,18 @@ internal class Parser
                 { typeof(Notebook), new Notebook().DefaultFetchFields },
             });
 
-
     static readonly ReadOnlyDictionary<Type, string> DefaultApiPaths =
         new(new Dictionary<Type, string>
             {
                 { typeof(Note), new Note().EntityApiPath },
                 { typeof(Notebook), new Notebook().EntityApiPath },
+            });
+
+    static readonly ReadOnlyDictionary<Type, string> FolderNames =
+        new(new Dictionary<Type, string>
+            {
+                { typeof(Note), new Note().SearchType },
+                { typeof(Notebook), new Notebook().SearchType },
             });
 
     public Parser(Expression expression)
@@ -54,7 +60,7 @@ internal class Parser
             // Joplin's naming differs here: it's `source_url` on a note, but `sourceurl` as a search param.
             _queryText = _queryText.Replace("source_url", "sourceurl");
         }
-        return new ParseResults(_queryText, _fields ?? "", endpoint, _resultKind, _pageSize, _page);
+        return new ParseResults(_queryText, _fields ?? "", endpoint, _resultKind, _pageSize, _page, FolderNames[type]);
     }
 
     string Parse(Expression ex)
@@ -115,6 +121,12 @@ internal class Parser
             _page = 1;
             _pageSize = 1;
             _resultKind = ResultKind.Single;
+            if (ex.Arguments.Count == 2)
+                return Parse(ex.Arguments[1]);
+            if (ex.Arguments.Count == 1
+                && ex.Arguments[0] is MethodCallExpression methodExpr)
+                return Parse(methodExpr.Arguments[0]);
+            throw new InvalidOperationException("Unknown operation");
         }
         if (ex.Method.Name == "Any")
         {
