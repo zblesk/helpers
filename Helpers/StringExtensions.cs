@@ -2,6 +2,8 @@
 
 public static class StringExtensions
 {
+    static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+
     public static string AddMarkdownQuote(this string text)
         => string.IsNullOrWhiteSpace(text)
             ? ""
@@ -24,18 +26,16 @@ public static class StringExtensions
     }
 
     public static string NormalizeText(this string input)
-                => input.RemoveDiacritics().Trim().ToLowerInvariant();
+        => input.RemoveDiacritics().Trim().ToLowerInvariant();
 
     public static string ReadableJoin(this IEnumerable<object> list)
-    => list.Count() switch
-    {
-        0 => "",
-        1 => $"{list.First()}",
-        2 => $"{list.First()} a {list.Last()}",
-        _ => string.Join(", ", list.Take(list.Count() - 1)) + $" a {list.Last()}"
-    };
-
-    static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+        => list.Count() switch
+        {
+            0 => "",
+            1 => $"{list.First()}",
+            2 => $"{list.First()} a {list.Last()}",
+            _ => string.Join(", ", list.Take(list.Count() - 1)) + $" a {list.Last()}"
+        };
 
     public static string ReadableSizeSuffix(long value, int decimalPlaces = 2)
     {

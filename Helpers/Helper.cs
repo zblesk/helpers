@@ -2,7 +2,6 @@
 
 public static class Helper
 {
-
     /// <summary>
     /// Send a mail via Mailgun.
     /// </summary>

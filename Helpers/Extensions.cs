@@ -18,4 +18,23 @@ public static class Extensions
     /// <returns>Min, max, or number if min <= number <= max.</returns>
     public static int Clamp(this int number, int min, int max)
         => Math.Min(max, Math.Max(min, number));
+
+    public static void Dump(this object obj) => Console.WriteLine(obj.ToString());
+    public static void Dump(this object obj, string msg) => Console.WriteLine(msg + " " + obj.ToString());
+
+    public static string ReadableJoin(this IEnumerable<object> list, string conjunction = "a")
+        => list.Count() switch
+        {
+            0 => "",
+            1 => $"{list.First()}",
+            2 => $"{list.First()} {conjunction} {list.Last()}",
+            _ => string.Join(", ", list.Take(list.Count() - 1)) + $" {conjunction} {list.Last()}"
+        };
+
+    public static string ReadableJoinLimited(this IEnumerable<object> list, int maxCount, string conjunction = "a")
+    {
+        if (list.Count() <= maxCount)
+            return list.ReadableJoin(conjunction);
+        return list.Take(maxCount).ReadableJoin(conjunction) + $" a {list.Count() - maxCount} dalsich";
+    }
 }
