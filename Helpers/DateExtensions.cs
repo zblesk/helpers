@@ -13,15 +13,20 @@ public static class DateExtensions
     /// <param name="ticks">Unix timestamp.</param>
     /// <returns></returns>
     public static DateTime FromUnixTimestamp(this long ticks) => Epoch.AddSeconds(ticks);
+    public static DateTime? FromUnixTimestamp(this long? ticks) => ticks.HasValue ? Epoch.AddSeconds(ticks.Value) : null;
 
     /// <summary>
     /// From DateTime to Unix Timestamp in seconds.
     /// </summary>
-    public static int ToUnixTimestamp(this DateTime date) => (int)date.Subtract(Epoch).TotalSeconds;
+    public static long ToUnixTimestamp(this DateTime date) => (long)date.Subtract(Epoch).TotalSeconds;
+
+    public static long? ToUnixTimestamp(this DateTime? date) => (long?)date?.Subtract(Epoch).TotalSeconds;
 
     /// <summary>
     /// From DateTime to Unix Timestamp in miliseconds.
     /// </summary>
-    public static long ToUnixTimestampMiliseconds(this DateTime date) => (long)date.Subtract(Epoch).TotalMilliseconds;
+    public static long ToUnixTimestampMiliseconds(this DateTime date) => (long)(date.Subtract(Epoch).TotalMilliseconds);
+
+    public static long? ToUnixTimestampMiliseconds(this DateTime? date) => date.HasValue ? (long)date.Value.Subtract(Epoch).TotalMilliseconds : null;
 
 }
