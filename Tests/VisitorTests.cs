@@ -9,6 +9,8 @@ namespace Tests;
 
 public class VisitorTests
 {
+    JoplinApi api = new JoplinApi("");
+
     void DictionariesEqual<T, S>(Dictionary<T, S> one, Dictionary<T, S> two)
     {
         if (one == null || two == null)
@@ -33,8 +35,6 @@ public class VisitorTests
     [Fact]
     void SimpleWhere()
     {
-        var api = new JoplinApi("t");
-
         Expression e = () => api.Notebooks.Where(n => n.title == "Odklada*");
 
         var v = new V().ExtractParams(e);
@@ -52,8 +52,6 @@ public class VisitorTests
     [Fact]
     void FirstWithWhere()
     {
-        var api = new JoplinApi("t");
-
         Expression e = () => api.Notes.Where(n => n.title == "my title").First();
 
         var v = new V().ExtractParams(e);
@@ -71,8 +69,6 @@ public class VisitorTests
     [Fact]
     void FirstNoWhere()
     {
-        var api = new JoplinApi("t");
-
         Expression e = () => api.Notes.First(n => n.title == "my title");
 
         var v = new V().ExtractParams(e);
@@ -90,8 +86,6 @@ public class VisitorTests
     [Fact]
     void FirstOrDefault()
     {
-        var api = new JoplinApi("t");
-
         Expression e = () => api.Notes.FirstOrDefault(n => n.title == "oh title");
 
         var v = new V().ExtractParams(e);
@@ -109,8 +103,6 @@ public class VisitorTests
     [Fact]
     void LinqLeftRightEquals()
     {
-        var api = new JoplinApi("t");
-
         Expression e = () => from n in api.Notes
                              where "left" == n.title && n.body == "right"
                              select new Note { id = n.id, title = n.title };
@@ -128,8 +120,6 @@ public class VisitorTests
     [Fact]
     void SkipAndTake()
     {
-        var api = new JoplinApi("t");
-
         Expression e = () => (from n in api.Notes
                               where "left" == n.title && n.body == "right"
                               select new { id = n.id, title = n.title })
@@ -151,7 +141,6 @@ public class VisitorTests
     [Fact]
     void UnsupportedOperations()
     {
-        var api = new JoplinApi("t");
         Expression e = () => api.Notebooks.Single();
 
         var v = new V();
@@ -165,8 +154,6 @@ public class VisitorTests
     [Fact]
     void SimpleFirst()
     {
-        var api = new JoplinApi("t");
-
         Expression e = () => api.Notes.First(n => n.title == "Odklada*");
 
         var v = new V().ExtractParams(e);
@@ -184,8 +171,6 @@ public class VisitorTests
     [Fact]
     void FirstOrDefaultById()
     {
-        var api = new JoplinApi("t");
-
         Expression e = () => api.Notes.FirstOrDefault(n => n.id == "1");
 
         var v = new V().ExtractParams(e);
@@ -203,8 +188,6 @@ public class VisitorTests
     [Fact]
     void WhereSelectMethodSyntax()
     {
-        var api = new JoplinApi("t");
-
         Expression e = () => api.Notes.Where(n => n.id == "8f2b0daf302542579fee7c7c55ab8781").Select(n => new { n.created_time });
 
         var v = new V().ExtractParams(e);
@@ -223,8 +206,6 @@ public class VisitorTests
     [Fact]
     void WhereSelectLinqSyntax()
     {
-        var api = new JoplinApi("t");
-
         Expression e = () => from n in api.Notes
                              where n.id == "8f2b0daf302542579fee7c7c55ab8781"
                              select new { n.id, n.created_time };

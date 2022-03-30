@@ -13,8 +13,8 @@ public class V : ExpressionVisitor
 
     (bool isProperty, string value, Type? type) GetVal(Expression ex)
         => ex is MemberExpression
-        ? (true, (ex as MemberExpression).Member.Name, (ex as MemberExpression).Expression.Type)
-        : (false, (ex as ConstantExpression).Value.ToString(), null);
+        ? (true, (ex as MemberExpression)!.Member.Name!, (ex as MemberExpression)!.Expression!.Type)
+        : (false, (ex as ConstantExpression)!.Value!.ToString()!, null);
 
     public QueryParameters ExtractParams(Expression e)
     {
