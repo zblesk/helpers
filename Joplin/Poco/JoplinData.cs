@@ -8,27 +8,52 @@ public abstract class JoplinData
     public string? id { get; set; }
 
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-    public ulong? created_time { get; set; }
+    public long? created_time { get; set; }
 
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-    public ulong? updated_time { get; set; }
+    public long? updated_time { get; set; }
 
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-    public ulong? user_created_time { get; set; }
+    public long? user_created_time { get; set; }
 
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-    public ulong? user_updated_time { get; set; }
+    public long? user_updated_time { get; set; }
 
+    [JsonIgnore]
     public abstract string EntityApiPath { get; }
+
+    [JsonIgnore]
     public abstract string DefaultFetchFields { get; }
+
+    [JsonIgnore]
     public abstract string SearchType { get; }
 
 
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonIgnore]
     public DateTime? CreatedTime
     {
-        get => Helpers.DateExtensions.FromUnixTimestamp((long)created_time);
-        set => created_time = (ulong)Helpers.DateExtensions.ToUnixTimestamp((DateTime)value);
+        get => Helpers.DateExtensions.FromUnixTimestamp(created_time);
+        set => created_time = Helpers.DateExtensions.ToUnixTimestamp(value);
     }
 
+    [JsonIgnore]
+    public DateTime? UpdatedTime
+    {
+        get => Helpers.DateExtensions.FromUnixTimestamp(updated_time);
+        set => updated_time = Helpers.DateExtensions.ToUnixTimestamp(value);
+    }
+
+    [JsonIgnore]
+    public DateTime? UserCreatedTime
+    {
+        get => Helpers.DateExtensions.FromUnixTimestamp(user_created_time);
+        set => user_created_time = Helpers.DateExtensions.ToUnixTimestamp(value);
+    }
+
+    [JsonIgnore]
+    public DateTime? UserUpdatedTime
+    {
+        get => Helpers.DateExtensions.FromUnixTimestamp(user_updated_time);
+        set => user_updated_time = Helpers.DateExtensions.ToUnixTimestamp(value);
+    }
 }

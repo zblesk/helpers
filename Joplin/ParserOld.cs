@@ -132,7 +132,7 @@ internal class Parser
         {
             _page = 1;
             _pageSize = 1;
-            _resultKind = ResultKind.Any;
+            _resultKind = ResultKind.Bool;
         }
         return Parse(ex.Arguments[0]);
     }

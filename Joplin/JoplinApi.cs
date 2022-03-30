@@ -84,7 +84,7 @@ public class JoplinApi
 
         if (searchCriteria.kind == ResultKind.Single)
             return r.FirstOrDefault();
-        if (searchCriteria.kind == ResultKind.Any)
+        if (searchCriteria.kind == ResultKind.Bool)
             return r.FirstOrDefault() != null;
         return r;
     }
