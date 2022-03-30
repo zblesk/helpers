@@ -37,7 +37,7 @@ public class VisitorTests
     {
         Expression e = () => api.Notebooks.Where(n => n.title == "Odklada*");
 
-        var v = new V().ExtractParams(e);
+        var v = new QueryVisitor().ExtractParams(e);
 
         Assert.Empty(v.selecting);
         Assert.Contains(typeof(Notebook), v.queriedTypes);
@@ -54,7 +54,7 @@ public class VisitorTests
     {
         Expression e = () => api.Notes.Where(n => n.title == "my title").First();
 
-        var v = new V().ExtractParams(e);
+        var v = new QueryVisitor().ExtractParams(e);
 
         Assert.Empty(v.selecting);
         Assert.Contains(typeof(Note), v.queriedTypes);
@@ -71,7 +71,7 @@ public class VisitorTests
     {
         Expression e = () => api.Notes.First(n => n.title == "my title");
 
-        var v = new V().ExtractParams(e);
+        var v = new QueryVisitor().ExtractParams(e);
 
         Assert.Empty(v.selecting);
         Assert.Contains(typeof(Note), v.queriedTypes);
@@ -88,7 +88,7 @@ public class VisitorTests
     {
         Expression e = () => api.Notes.FirstOrDefault(n => n.title == "oh title");
 
-        var v = new V().ExtractParams(e);
+        var v = new QueryVisitor().ExtractParams(e);
 
         Assert.Empty(v.selecting);
         Assert.Contains(typeof(Note), v.queriedTypes);
@@ -107,7 +107,7 @@ public class VisitorTests
                              where "left" == n.title && n.body == "right"
                              select new Note { id = n.id, title = n.title };
 
-        var v = new V().ExtractParams(e);
+        var v = new QueryVisitor().ExtractParams(e);
 
         SetsEqual(v.selecting, new HashSet<string> { "id", "title" });
         Assert.Contains(typeof(Note), v.queriedTypes);
@@ -126,7 +126,7 @@ public class VisitorTests
                              .Skip(20)
                              .Take(10);
 
-        var v = new V().ExtractParams(e);
+        var v = new QueryVisitor().ExtractParams(e);
 
         SetsEqual(v.selecting, new HashSet<string> { "id", "title" });
         Assert.Contains(typeof(Note), v.queriedTypes);
@@ -143,7 +143,7 @@ public class VisitorTests
     {
         Expression e = () => api.Notebooks.Single();
 
-        var v = new V();
+        var v = new QueryVisitor();
         Assert.Throws<InvalidOperationException>(() => v.ExtractParams(e));
 
         e = () => api.Notes.First(n => n.id == "a" || n.id == "b");
@@ -156,7 +156,7 @@ public class VisitorTests
     {
         Expression e = () => api.Notes.First(n => n.title == "Odklada*");
 
-        var v = new V().ExtractParams(e);
+        var v = new QueryVisitor().ExtractParams(e);
 
         Assert.Empty(v.selecting);
         Assert.Contains(typeof(Note), v.queriedTypes);
@@ -173,7 +173,7 @@ public class VisitorTests
     {
         Expression e = () => api.Notes.FirstOrDefault(n => n.id == "1");
 
-        var v = new V().ExtractParams(e);
+        var v = new QueryVisitor().ExtractParams(e);
 
         Assert.Empty(v.selecting);
         Assert.Contains(typeof(Note), v.queriedTypes);
@@ -190,7 +190,7 @@ public class VisitorTests
     {
         Expression e = () => api.Notes.Where(n => n.id == "8f2b0daf302542579fee7c7c55ab8781").Select(n => new { n.created_time });
 
-        var v = new V().ExtractParams(e);
+        var v = new QueryVisitor().ExtractParams(e);
 
         Assert.NotEmpty(v.selecting);
         Assert.Contains("created_time", v.selecting);
@@ -210,7 +210,7 @@ public class VisitorTests
                              where n.id == "8f2b0daf302542579fee7c7c55ab8781"
                              select new { n.id, n.created_time };
 
-        var v = new V().ExtractParams(e);
+        var v = new QueryVisitor().ExtractParams(e);
 
         Assert.NotEmpty(v.selecting);
         Assert.Contains("created_time", v.selecting);

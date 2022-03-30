@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace zblesk.Joplin;
 
-public class V : ExpressionVisitor
+public class QueryVisitor : ExpressionVisitor
 {
     private QueryParameters parameters = new();
 
