@@ -36,7 +36,5 @@ public class JoplinDataset<T> : IQueryable<T>, IQueryable, IOrderedQueryable<T>,
 
     public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)_provider.Execute(_expression)).GetEnumerator();
 
-    public override string ToString() => _provider.GetQueryText(_expression);
-
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_provider.Execute(_expression)).GetEnumerator();
 }

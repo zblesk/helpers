@@ -89,6 +89,17 @@ public class JoplinApi
         return r;
     }
 
+
+    private string MakeUrl(string path) => _url.AppendPathSegment(path).SetQueryParam("token", _token);
+    private string MakeUrl(params string[] path) => _url.AppendPathSegments(path).SetQueryParam("token", _token);
+    private string AddPaging(string url, int page) => url.SetQueryParams(new { limit = _defaultPageSize, page = page });
+    private string MakePagedUrl(string path, int page) => AddPaging(MakeUrl(path), page);
+
+    public string BuildQuery(QueryParameters parameters)
+        => parameters.BuildQuery(_token, _url);
+
+    /// --- finalne
+
     public Task<T> Add<T>(T item)
         where T : JoplinData
         => MakeUrl(item.EntityApiPath)
@@ -114,8 +125,4 @@ public class JoplinApi
             .AppendPathSegment(id)
             .DeleteAsync();
 
-    private string MakeUrl(string path) => _url.AppendPathSegment(path).SetQueryParam("token", _token);
-    private string MakeUrl(params string[] path) => _url.AppendPathSegments(path).SetQueryParam("token", _token);
-    private string AddPaging(string url, int page) => url.SetQueryParams(new { limit = _defaultPageSize, page = page });
-    private string MakePagedUrl(string path, int page) => AddPaging(MakeUrl(path), page);
 }

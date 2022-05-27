@@ -49,9 +49,13 @@ public class QueryVisitor : ExpressionVisitor
             var (_, value, _) = GetVal(expr.Arguments[1]);
             parameters.take = int.Parse(value);
         }
-        else if (new[] { "Select", "Where", "ToList" }.Contains(expr.Method.Name))
+        else if (new[] { "Where", "ToList" }.Contains(expr.Method.Name))
         {
             // do nothing
+        }
+        else if (new[] { "Select" }.Contains(expr.Method.Name))
+        {
+            parameters.ReturnType = expr.Type.GetGenericArguments().First();
         }
         else
             throw new InvalidOperationException($"Unsupported method: {expr.Method.Name}");

@@ -10,4 +10,5 @@ public class QueryParameters
     public int? take = null;
     public int? skip = null;
     public ResultKind Result = ResultKind.List;
+    public Type? ReturnType = null;
 }
