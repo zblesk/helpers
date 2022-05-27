@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Joplin", "Joplin\Joplin.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helpers.Web", "Helpers.Web\Helpers.Web.csproj", "{5610FA20-02A4-48E9-BC62-22A64F29E4B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{1D82C7F8-6308-4184-9EA1-5DE0DCD5CF25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{1D82C7F8-6308-4184-9EA1-5DE0DCD5CF25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{76E62883-ED1E-4D9B-ADB3-674922BE5CCC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{1D82C7F8-6308-4184-9EA1-5DE0DCD5CF25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D82C7F8-6308-4184-9EA1-5DE0DCD5CF25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D82C7F8-6308-4184-9EA1-5DE0DCD5CF25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76E62883-ED1E-4D9B-ADB3-674922BE5CCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76E62883-ED1E-4D9B-ADB3-674922BE5CCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76E62883-ED1E-4D9B-ADB3-674922BE5CCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76E62883-ED1E-4D9B-ADB3-674922BE5CCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

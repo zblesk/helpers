@@ -18,9 +18,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="flurl" Version="3.0.2" />
-    <PackageReference Include="flurl.http" Version="3.2.0" />
-    <PackageReference Include="markdig" Version="0.26.0" />
+    <PackageReference Include="flurl" Version="3.0.6" />
+    <PackageReference Include="flurl.http" Version="3.2.4" />
+    <PackageReference Include="markdig" Version="0.30.2" />
   </ItemGroup>
 
 </Project>
