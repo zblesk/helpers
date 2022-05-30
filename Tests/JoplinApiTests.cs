@@ -72,7 +72,7 @@ public class JoplinApiTests
             Assert.NotNull(note.source);
             Assert.NotEmpty(note.source);
         }
-        foreach (var (noteId, parentId) in new[] { 
+        foreach (var (noteId, parentId) in new[] {
             ("a43192e320cc47b8b20364dc6d8ec605", "08a1e7a29b214950b40a5de60f347c91"),
             ("5f65a1261fb846c287188f0d2d863343", "08a1e7a29b214950b40a5de60f347c91"),
             ("b5996d13c44b4f89a19bb16855ade76a", "60d0adf25d1a4648a386c7656acb5579")
@@ -82,5 +82,39 @@ public class JoplinApiTests
             var note = notes.First(n => n.id == noteId);
             Assert.Equal(parentId, note.parent_id);
         }
+    }
+
+    [Fact]
+    public void FetchMultipleSelectedExplicitType()
+    {
+        var notes = (from note in api.Notes
+                     where note.title == "This is my"
+                     select new Note { title = note.title, source_url = note.source_url }
+                    ).ToList();
+        Assert.NotNull(notes);
+        // At _least_ 3; can be more, if more are present in the running Joplin instance.
+        Assert.True(notes.Count >= 3);
+        foreach (var note in notes)
+        {
+            Assert.Contains("This is my", note.title);
+            Assert.Null(note.body);
+            Assert.Null(note.created_time);
+            Assert.Null(note.source);
+            Assert.Null(note.body_html);
+        }
+        foreach (var (noteId, parentId) in new[] {
+            ("a43192e320cc47b8b20364dc6d8ec605", "08a1e7a29b214950b40a5de60f347c91"),
+            ("5f65a1261fb846c287188f0d2d863343", "08a1e7a29b214950b40a5de60f347c91"),
+            ("b5996d13c44b4f89a19bb16855ade76a", "60d0adf25d1a4648a386c7656acb5579")
+        })
+        {
+            Assert.Contains(notes, n => n.id == noteId);
+            var note = notes.First(n => n.id == noteId);
+            Assert.Null(note.parent_id);
+            Assert.DoesNotContain(notes, n => n.id == parentId);
+        }
+        Assert.Equal("https://zblesk.net/", notes.First(n => n.id == "5f65a1261fb846c287188f0d2d863343").source_url);
+        Assert.Equal("", notes.First(n => n.id == "a43192e320cc47b8b20364dc6d8ec605").source_url);
+        Assert.Equal("", notes.First(n => n.id == "b5996d13c44b4f89a19bb16855ade76a").source_url);
     }
 }

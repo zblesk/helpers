@@ -7,11 +7,13 @@ var token = devmode_token;
 var port = 27583;
 
 var api = new JoplinApi(token, port);
+// Re dyn anon mapping: https://stackoverflow.com/questions/9639451/how-to-map-an-anonymous-object-to-a-class-by-automapper
 
-//var note = api.Notes.FirstOrDefault(n => n.id == "a43192e320cc47b8b20364dc6d8ec605");
+
+
 var notes = (from note in api.Notes
              where note.title == "This is my"
-             select note
+             select new Note { title = note.title, source_url = note.source_url }
             ).ToList();
 
 Console.ReadKey();
