@@ -8,8 +8,10 @@ var port = 27583;
 
 var api = new JoplinApi(token, port);
 
-var t = new QueryVisitor();
-
-var a = api.Notes.Where(n => n.id == "79bc42796c2b40249c8e8e78c8278989").ToList();
+//var note = api.Notes.FirstOrDefault(n => n.id == "a43192e320cc47b8b20364dc6d8ec605");
+var notes = (from note in api.Notes
+             where note.title == "This is my"
+             select note
+            ).ToList();
 
 Console.ReadKey();

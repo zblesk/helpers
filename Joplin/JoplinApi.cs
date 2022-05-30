@@ -20,8 +20,8 @@ public class JoplinApi
         _token = token;
         _url = $"http://localhost:{port}";
 
-        Notes = new JoplinDataset<Note>(new JoplinQueryProvider(this, typeof(Note)));
-        Notebooks = new JoplinDataset<Notebook>(new JoplinQueryProvider(this, typeof(Notebook)));
+        Notes = new JoplinDataset<Note>(new JoplinQueryProvider(this));
+        Notebooks = new JoplinDataset<Notebook>(new JoplinQueryProvider(this));
     }
 
     public async Task<bool> IsReady()

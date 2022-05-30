@@ -9,13 +9,12 @@ namespace zblesk.Joplin;
 public class JoplinQueryProvider : IQueryProvider
 {
     private readonly JoplinApi _joplinApi;
-    private readonly Type _type;
-    private QueryVisitor _visitor = new QueryVisitor();
+    private readonly QueryVisitor _visitor = new();
+    private static readonly IMapper _mapper = new MapperConfiguration(_ => { }).CreateMapper();
 
-    public JoplinQueryProvider(JoplinApi joplinApi, Type type)
+    public JoplinQueryProvider(JoplinApi joplinApi)
     {
         _joplinApi = joplinApi;
-        _type = type;
     }
 
     IQueryable<S> IQueryProvider.CreateQuery<S>(Expression expression)
@@ -44,61 +43,38 @@ public class JoplinQueryProvider : IQueryProvider
     {
         var param = _visitor.ExtractParams(expression);
         var url = _joplinApi.BuildQuery(param);
-        var q = url.GetJsonAsync();
-        q.Wait();
-        var result = q.Result as ExpandoObject;
-        Type destinationType = param.ReturnType ?? param.queriedTypes.First();
+        var promise = url.GetJsonAsync();
+        promise.Wait();
+        var apiResult = promise.Result;
+        var destinationType = param.ReturnType ?? param.queriedTypes.First();
 
         switch (param.RequestedResultKind)
         {
             case ResultKind.List:
-                var mapper = new MapperConfiguration(cfg => { }).CreateMapper();
-                var resultObj = mapper.Map(result, typeof(ExpandoObject), destinationType);
+                var listType = typeof(List<>).MakeGenericType(new[] { destinationType });
+                var list = Activator.CreateInstance(listType);
+                var addMethod = listType!.GetMethod("Add");
+                var add = (object obj) => addMethod!.Invoke(list, new object[] { obj });
+                // If the user requested list, but API call was for a single object. Wrap in list.
                 if (param.ApiResponseKind == ResultKind.Single)
                 {
-                    // User requested list, but API call was for a single object. Wrap in enum.
-                    Type listType = typeof(List<>).MakeGenericType(new[] { destinationType });
-                    var list = Activator.CreateInstance(listType);
-                    listType!.GetMethod("Add").Invoke(list, new object[] { resultObj });
-                    return list;
+                    var resultObj = _mapper.Map(apiResult, typeof(ExpandoObject), destinationType);
+                    add(resultObj);
                 }
-                return resultObj;
-                //var source = new Source();
-                //var dest = Mapper.Map<Source, Dest>(source, opt => opt.ConfigureMap().ForMember(dest => dest.Value, m => m.MapFrom(src => src.Value + 10)));
-                //var config = new MapperConfiguration(cfg =>
-                //{
-                //    var mapMethod = cfg.GetType().GetMethod("CreateMap").MakeGenericMethod(param.ReturnType ?? param.queriedTypes.First(), typeof(object));
-                //    mapMethod.Invoke(cfg, null);
-                //});
-                //var map = config.CreateMapper();
-                break;
+                else
+                    foreach (var obj in apiResult.items)
+                    {
+                        var resultObj = _mapper.Map(obj, typeof(ExpandoObject), destinationType);
+                        add(resultObj);
+                    }
+                return list!;
             case ResultKind.Single:
-
-
-                
-                break;
+                return _mapper.Map(apiResult, typeof(ExpandoObject), destinationType);
             case ResultKind.Bool:
                 break;
             default:
                 throw new NotImplementedException($"Unknown result type: {param.RequestedResultKind}");
         }
-
-        //var r = new List<>();
-
-        //var config = new MapperConfiguration(cfg => cfg.CreateMap<T, dynamic>());
-        //var map = config.CreateMapper();
-
-        //foreach (var element in q.Result.items)
-        //{
-        //    T n = map.Map<T>(element);
-        //    r.Add(n);
-        //}
-
-        //if (searchCriteria.kind == ResultKind.Single)
-        //    return r.FirstOrDefault();
-        //if (searchCriteria.kind == ResultKind.Bool)
-        //    return r.FirstOrDefault() != null;
-        //return r;
-        return null;
+        throw new NotImplementedException($"Unknown result type: {param.RequestedResultKind}");
     }
 }
