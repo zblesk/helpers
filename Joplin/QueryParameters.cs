@@ -9,6 +9,7 @@ public class QueryParameters
     public int limit = 100;
     public int? take = null;
     public int? skip = null;
-    public ResultKind Result = ResultKind.List;
+    public ResultKind RequestedResultKind = ResultKind.List;
+    public ResultKind ApiResponseKind = ResultKind.List;
     public Type? ReturnType = null;
 }

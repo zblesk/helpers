@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Dynamic;
+using System.Linq.Expressions;
 using System.Reflection;
 using AutoMapper;
 using Flurl.Http;
@@ -45,17 +46,41 @@ public class JoplinQueryProvider : IQueryProvider
         var url = _joplinApi.BuildQuery(param);
         var q = url.GetJsonAsync();
         q.Wait();
+        var result = q.Result as ExpandoObject;
+        Type destinationType = param.ReturnType ?? param.queriedTypes.First();
 
-        switch (param.Result)
+        switch (param.RequestedResultKind)
         {
             case ResultKind.List:
+                var mapper = new MapperConfiguration(cfg => { }).CreateMapper();
+                var resultObj = mapper.Map(result, typeof(ExpandoObject), destinationType);
+                if (param.ApiResponseKind == ResultKind.Single)
+                {
+                    // User requested list, but API call was for a single object. Wrap in enum.
+                    Type listType = typeof(List<>).MakeGenericType(new[] { destinationType });
+                    var list = Activator.CreateInstance(listType);
+                    listType!.GetMethod("Add").Invoke(list, new object[] { resultObj });
+                    return list;
+                }
+                return resultObj;
+                //var source = new Source();
+                //var dest = Mapper.Map<Source, Dest>(source, opt => opt.ConfigureMap().ForMember(dest => dest.Value, m => m.MapFrom(src => src.Value + 10)));
+                //var config = new MapperConfiguration(cfg =>
+                //{
+                //    var mapMethod = cfg.GetType().GetMethod("CreateMap").MakeGenericMethod(param.ReturnType ?? param.queriedTypes.First(), typeof(object));
+                //    mapMethod.Invoke(cfg, null);
+                //});
+                //var map = config.CreateMapper();
                 break;
             case ResultKind.Single:
+
+
+                
                 break;
             case ResultKind.Bool:
                 break;
             default:
-                throw new NotImplementedException($"Unknown result type: {param.Result}");
+                throw new NotImplementedException($"Unknown result type: {param.RequestedResultKind}");
         }
 
         //var r = new List<>();

@@ -31,13 +31,13 @@ public class QueryVisitor : ExpressionVisitor
         {
             parameters.page = 1;
             parameters.limit = 1;
-            parameters.Result = ResultKind.Single;
+            parameters.RequestedResultKind = ResultKind.Single;
         }
         else if (expr.Method.Name == "Any")
         {
             parameters.page = 1;
             parameters.limit = 1;
-            parameters.Result = ResultKind.Bool;
+            parameters.RequestedResultKind = ResultKind.Bool;
         }
         else if (expr.Method.Name == "Skip")
         {

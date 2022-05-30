@@ -10,10 +10,6 @@ var api = new JoplinApi(token, port);
 
 var t = new QueryVisitor();
 
-Expression e = () => (from n in api.Notes
-                      where "2022" == n.title
-                      select new { n.id, n.title, n.is_todo, n.body })
-                     .Skip(20)
-                     .Take(10);
+var a = api.Notes.Where(n => n.id == "79bc42796c2b40249c8e8e78c8278989").ToList();
 
 Console.ReadKey();

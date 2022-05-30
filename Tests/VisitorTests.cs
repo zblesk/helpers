@@ -46,7 +46,7 @@ public class VisitorTests
         Assert.Contains("Odklada*", v.filterValues.Values);
         Assert.Equal(1, v.page);
         Assert.Equal(100, v.limit);
-        Assert.Equal(ResultKind.List, v.Result);
+        Assert.Equal(ResultKind.List, v.RequestedResultKind);
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class VisitorTests
         Assert.Contains("my title", v.filterValues.Values);
         Assert.Equal(1, v.page);
         Assert.Equal(1, v.limit);
-        Assert.Equal(ResultKind.Single, v.Result);
+        Assert.Equal(ResultKind.Single, v.RequestedResultKind);
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public class VisitorTests
         Assert.Contains("my title", v.filterValues.Values);
         Assert.Equal(1, v.page);
         Assert.Equal(1, v.limit);
-        Assert.Equal(ResultKind.Single, v.Result);
+        Assert.Equal(ResultKind.Single, v.RequestedResultKind);
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class VisitorTests
         Assert.Contains("oh title", v.filterValues.Values);
         Assert.Equal(1, v.page);
         Assert.Equal(1, v.limit);
-        Assert.Equal(ResultKind.Single, v.Result);
+        Assert.Equal(ResultKind.Single, v.RequestedResultKind);
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public class VisitorTests
         DictionariesEqual(v.filterValues, new Dictionary<string, string> { { "title", "left" }, { "body", "right" } });
         Assert.Equal(1, v.page);
         Assert.Equal(100, v.limit);
-        Assert.Equal(ResultKind.List, v.Result);
+        Assert.Equal(ResultKind.List, v.RequestedResultKind);
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class VisitorTests
         Assert.Equal(100, v.limit);
         Assert.Equal(20, v.skip);
         Assert.Equal(10, v.take);
-        Assert.Equal(ResultKind.List, v.Result);
+        Assert.Equal(ResultKind.List, v.RequestedResultKind);
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public class VisitorTests
         Assert.Contains("Odklada*", v.filterValues.Values);
         Assert.Equal(1, v.page);
         Assert.Equal(1, v.limit);
-        Assert.Equal(ResultKind.Single, v.Result);
+        Assert.Equal(ResultKind.Single, v.RequestedResultKind);
     }
 
     [Fact]
@@ -182,7 +182,7 @@ public class VisitorTests
         Assert.Contains("1", v.filterValues.Values);
         Assert.Equal(1, v.page);
         Assert.Equal(1, v.limit);
-        Assert.Equal(ResultKind.Single, v.Result);
+        Assert.Equal(ResultKind.Single, v.RequestedResultKind);
     }
 
     [Fact]
@@ -200,7 +200,7 @@ public class VisitorTests
         Assert.Contains("8f2b0daf302542579fee7c7c55ab8781", v.filterValues.Values);
         Assert.Equal(1, v.page);
         Assert.Equal(100, v.limit);
-        Assert.Equal(ResultKind.List, v.Result);
+        Assert.Equal(ResultKind.List, v.RequestedResultKind);
     }
 
     [Fact]
@@ -220,6 +220,6 @@ public class VisitorTests
         Assert.Contains("8f2b0daf302542579fee7c7c55ab8781", v.filterValues.Values);
         Assert.Equal(1, v.page);
         Assert.Equal(100, v.limit);
-        Assert.Equal(ResultKind.List, v.Result);
+        Assert.Equal(ResultKind.List, v.RequestedResultKind);
     }
 }

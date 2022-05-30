@@ -28,7 +28,7 @@ public static class QueryBuilder
             pars.selecting = new HashSet<string>(DefaultFieldset[type]);
         pars.selecting.Add("id"); // make sure ID is always present
 
-        Flurl.Url url;
+        Url url;
 
         foreach (var fieldReplacement in new Dictionary<string, string> { { "body_html", "body" } }) // todo: datetime exts?
             if (pars.selecting.Contains(fieldReplacement.Key))
@@ -39,13 +39,14 @@ public static class QueryBuilder
 
         if ((
             // If only a single one is requested and ID is present
-            pars.Result == ResultKind.Single
+            pars.RequestedResultKind == ResultKind.Single
              // or if the only filtered field is the ID
              || pars.filterValues.Count == 1)
             && pars.filterValues.Keys.Contains("id"))
         {
             // fetch single by id
             url = baseUrl.AppendPathSegments(DefaultApiPaths[type], pars.filterValues["id"]);
+            pars.ApiResponseKind = ResultKind.Single;
         }
         else
         {
