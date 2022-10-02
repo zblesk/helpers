@@ -94,4 +94,11 @@ public class Note : JoplinData
 
     public override string SearchType => "note";
 
+    public string GetMarkdownLink(string? linkTitle = null)
+    {
+        if (id == null)
+            throw new InvalidOperationException("Missing ID: Can't create Markdown link. (Maybe the note wasn't saved yet?)");
+        return $"[{linkTitle ?? title}](:/{id})";
+    }
+
 }
