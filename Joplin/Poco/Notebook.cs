@@ -5,7 +5,6 @@ namespace zblesk.Joplin;
 [DebuggerDisplay("Notebook {title} ({id,nq})")]
 public class Notebook : JoplinData
 {
-    public string? id { get; set; }
     public string? title { get; set; }
     public string? encryption_cipher_text { get; set; }
     public ulong? encryption_applied { get; set; }

@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using zblesk.Joplin;
 
-var devmode_token = "388f2954431e126b19fc9748a5dc09a45a0d07cf50cb8098f4890fc966c5725617b33f84d8deba9247c958b2afa783a2bb2af33a66d2eb127608740e437f9b92";
+var devmode_token = "d96248fb2b68b5cc6fd58114846d9809a725d88899295219d454f0d738ff81e173c9df563382ec73cb1456df63dabd3fc657c1deedbcc80673e24f1e1a871d96";
 var token = devmode_token;
 var port = 27583;
 
@@ -12,7 +12,8 @@ var api = new JoplinApi(token, port);
 
 
 var notes = (from note in api.Notes
-             where note.title == "This is my"
+             where
+                note.parent_id == "0b433eae117d48928a5cdacea2fcb197"
              select new Note { title = note.title, source_url = note.source_url }
             ).ToList();
 

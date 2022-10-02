@@ -48,6 +48,14 @@ public static class QueryBuilder
             url = baseUrl.AppendPathSegments(DefaultApiPaths[type], pars.filterValues["id"]);
             pars.ApiResponseKind = ResultKind.Single;
         }
+        else if (
+            // If only a single filter is defined, and it's parent, go to notebook's endpoint
+            pars.filterValues.Count == 1
+            && pars.filterValues.Keys.Contains("parent_id"))
+        {
+            url = baseUrl.AppendPathSegments("folders", pars.filterValues["parent_id"], "notes");
+            pars.ApiResponseKind = ResultKind.List;
+        }
         else
         {
             // use search endpoint

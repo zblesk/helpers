@@ -14,7 +14,7 @@ namespace Tests;
 public class JoplinApiTests
 {
     JoplinApi api = new JoplinApi(
-        "388f2954431e126b19fc9748a5dc09a45a0d07cf50cb8098f4890fc966c5725617b33f84d8deba9247c958b2afa783a2bb2af33a66d2eb127608740e437f9b92",
+        "d96248fb2b68b5cc6fd58114846d9809a725d88899295219d454f0d738ff81e173c9df563382ec73cb1456df63dabd3fc657c1deedbcc80673e24f1e1a871d96",
         27583);
 
     /// <summary>
@@ -23,11 +23,12 @@ public class JoplinApiTests
     [Fact]
     public void FilterListReducedToSingle()
     {
-        var results = api.Notes.Where(n => n.id == "a43192e320cc47b8b20364dc6d8ec605").ToList();
+        var noteId = "a11a325cc04a453c92ff56da279e0e05";
+        var results = api.Notes.Where(n => n.id == noteId).ToList();
         Assert.NotNull(results);
         Assert.Single(results);
         var note = results[0];
-        Assert.Equal("a43192e320cc47b8b20364dc6d8ec605", note.id);
+        Assert.Equal(noteId, note.id);
         Assert.Equal("This is my test note", note.title);
         // Careful: Joplin returns \n, not \r\n.
         Assert.Equal("With some body and **bold text**, some 文字 and 🈁️. \n\n==That's Smart™.==", note.body);
