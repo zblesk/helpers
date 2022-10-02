@@ -12,4 +12,5 @@ public class QueryParameters
     public ResultKind RequestedResultKind = ResultKind.List;
     public ResultKind ApiResponseKind = ResultKind.List;
     public Type? ReturnType = null;
+    public bool ExplicitPagingInvoked { get; set; } = false;
 }

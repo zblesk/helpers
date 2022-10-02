@@ -98,6 +98,9 @@ public class JoplinApi
     public string BuildQuery(QueryParameters parameters)
         => parameters.BuildQuery(_token, _url);
 
+    public string BuildQuery(QueryParameters parameters, int page)
+        => parameters.BuildQuery(_token, _url, page);
+
     /// --- finalne
 
     public Task<T> Add<T>(T item)

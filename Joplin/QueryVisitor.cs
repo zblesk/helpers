@@ -43,11 +43,13 @@ public class QueryVisitor : ExpressionVisitor
         {
             var (_, value, _) = GetVal(expr.Arguments[1]);
             parameters.skip = int.Parse(value);
+            parameters.ExplicitPagingInvoked = true;
         }
         else if (expr.Method.Name == "Take")
         {
             var (_, value, _) = GetVal(expr.Arguments[1]);
             parameters.take = int.Parse(value);
+            parameters.ExplicitPagingInvoked = true;
         }
         else if (new[] { "Where", "ToList" }.Contains(expr.Method.Name))
         {

@@ -72,11 +72,11 @@ public class JoplinQueryProvider : IQueryProvider
                             var resultObj = _mapper.Map(obj, typeof(ExpandoObject), destinationType);
                             add(resultObj);
                         }
-                        @continue = apiResult.has_more == true;
+                        @continue = apiResult.has_more == true && !param.ExplicitPagingInvoked;
                         if (@continue)
                         {
                             page++;
-                            promise = url.SetQueryParam("page", page).GetJsonAsync();
+                            promise = _joplinApi.BuildQuery(param, page).GetJsonAsync();
                             promise.Wait();
                             apiResult = promise.Result;
                         }

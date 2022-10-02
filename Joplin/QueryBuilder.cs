@@ -18,11 +18,16 @@ public static class QueryBuilder
         }
     }
 
-    public static Flurl.Url BuildQuery(this QueryParameters pars, string token, string baseUrl = "http://localhost:41184")
+    public static Flurl.Url BuildQuery(this QueryParameters pars, string token, string baseUrl = "http://localhost:41184", int? page = null)
     {
         if (pars.queriedTypes.Count != 1)
             throw new Exception($"Exactly one Joplin data type must be queried; found {pars.queriedTypes.Count}");
         var type = pars.queriedTypes.First();
+
+        if (pars.ExplicitPagingInvoked)
+        {
+            throw new Exception("The Skip and Take methods do not jell well with the Joplin API, which uses Limit and Page. Please call ToList first.");
+        }
 
         if (pars.selecting.Count == 0) // select all fields if none specified
             pars.selecting = new HashSet<string>(DefaultFieldset[type]);
@@ -68,6 +73,10 @@ public static class QueryBuilder
 
         url.SetQueryParam("token", token)
             .SetQueryParam("fields", string.Join(',', pars.selecting));
+
+        if (page.HasValue)
+            url.SetQueryParam("page", page.Value);
+
         return url;
     }
 }

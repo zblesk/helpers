@@ -15,6 +15,8 @@ var notes = (from note in api.Notes
              where
                 note.parent_id == "0b433eae117d48928a5cdacea2fcb197"
              select new Note { title = note.title, source_url = note.source_url }
-            ).ToList();
+            )
+            .Take(11)
+            .ToList();
 
 Console.ReadKey();
