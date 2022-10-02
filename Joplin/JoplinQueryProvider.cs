@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using AutoMapper;
+using Flurl;
 using Flurl.Http;
 
 namespace zblesk.Joplin;
@@ -55,6 +56,8 @@ public class JoplinQueryProvider : IQueryProvider
                 var list = Activator.CreateInstance(listType);
                 var addMethod = listType!.GetMethod("Add");
                 var add = (object obj) => addMethod!.Invoke(list, new object[] { obj });
+                var page = 1;
+                var @continue = false;
                 // If the user requested list, but API call was for a single object. Wrap in list.
                 if (param.ApiResponseKind == ResultKind.Single)
                 {
@@ -62,11 +65,23 @@ public class JoplinQueryProvider : IQueryProvider
                     add(resultObj);
                 }
                 else
-                    foreach (var obj in apiResult.items)
+                    do
                     {
-                        var resultObj = _mapper.Map(obj, typeof(ExpandoObject), destinationType);
-                        add(resultObj);
+                        foreach (var obj in apiResult.items)
+                        {
+                            var resultObj = _mapper.Map(obj, typeof(ExpandoObject), destinationType);
+                            add(resultObj);
+                        }
+                        @continue = apiResult.has_more == true;
+                        if (@continue)
+                        {
+                            page++;
+                            promise = url.SetQueryParam("page", page).GetJsonAsync();
+                            promise.Wait();
+                            apiResult = promise.Result;
+                        }
                     }
+                    while (@continue);
                 return list!;
             case ResultKind.Single:
                 return _mapper.Map(apiResult, typeof(ExpandoObject), destinationType);
