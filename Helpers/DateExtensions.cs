@@ -14,6 +14,7 @@ public static class DateExtensions
     /// <returns></returns>
     public static DateTime FromUnixTimestamp(this long ticks) => Epoch.AddSeconds(ticks);
     public static DateTime? FromUnixTimestamp(this long? ticks) => ticks.HasValue ? Epoch.AddSeconds(ticks.Value) : null;
+    public static DateTime? FromUnixTimestampMiliseconds(this long? ticks) => ticks.HasValue ? Epoch.AddMilliseconds(ticks.Value) : null;
 
     /// <summary>
     /// From DateTime to Unix Timestamp in seconds.

@@ -32,28 +32,28 @@ public abstract class JoplinData
     [JsonIgnore]
     public DateTime? CreatedTime
     {
-        get => Helpers.DateExtensions.FromUnixTimestamp(created_time);
-        set => created_time = Helpers.DateExtensions.ToUnixTimestamp(value);
+        get => Helpers.DateExtensions.FromUnixTimestampMiliseconds(created_time);
+        set => created_time = Helpers.DateExtensions.ToUnixTimestampMiliseconds(value);
     }
 
     [JsonIgnore]
     public DateTime? UpdatedTime
     {
-        get => Helpers.DateExtensions.FromUnixTimestamp(updated_time);
-        set => updated_time = Helpers.DateExtensions.ToUnixTimestamp(value);
+        get => Helpers.DateExtensions.FromUnixTimestampMiliseconds(updated_time);
+        set => updated_time = Helpers.DateExtensions.ToUnixTimestampMiliseconds(value);
     }
 
     [JsonIgnore]
     public DateTime? UserCreatedTime
     {
-        get => Helpers.DateExtensions.FromUnixTimestamp(user_created_time);
-        set => user_created_time = Helpers.DateExtensions.ToUnixTimestamp(value);
+        get => Helpers.DateExtensions.FromUnixTimestampMiliseconds(user_created_time);
+        set => user_created_time = Helpers.DateExtensions.ToUnixTimestampMiliseconds(value);
     }
 
     [JsonIgnore]
     public DateTime? UserUpdatedTime
     {
-        get => Helpers.DateExtensions.FromUnixTimestamp(user_updated_time);
-        set => user_updated_time = Helpers.DateExtensions.ToUnixTimestamp(value);
+        get => Helpers.DateExtensions.FromUnixTimestampMiliseconds(user_updated_time);
+        set => user_updated_time = Helpers.DateExtensions.ToUnixTimestampMiliseconds(value);
     }
 }
