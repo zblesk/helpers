@@ -111,4 +111,11 @@ public sealed class MatrixChatroomWatcher : IDisposable
             }
         }
     }
+
+    public static class MessageTypes
+    {
+        public const string Message = "m.room.message";
+        public const string Redaction = "m.room.redaction";
+        public const string Reaction = "m.reaction";
+    }
 }
