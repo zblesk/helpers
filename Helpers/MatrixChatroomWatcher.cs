@@ -76,6 +76,12 @@ public sealed class MatrixChatroomWatcher : IDisposable
                             .PostJsonAsync(body);
     }
 
+    public async Task<dynamic> GetMessage(string eventId)
+        => (await $"{_homeserverUrl}/_matrix/client/v3/rooms/{_roomId}/event/{eventId}?access_token={_authToken}"
+               .GetAsync()
+               .ReceiveJson())
+               .content;
+
     public void Dispose()
         => timer?.Dispose();
 
