@@ -1,4 +1,7 @@
-﻿using Markdig;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Dynamic;
+using System.Text.Json;
+using Markdig;
 
 namespace zblesk.Helpers;
 
@@ -35,6 +38,10 @@ public sealed class MatrixChatroomWatcher : IDisposable
         _authToken = token ?? throw new ArgumentException($"'{nameof(token)}' cannot be null or empty.", nameof(token));
     }
 
+    /// <summary>
+    /// Starts the Watcher
+    /// </summary>
+    /// <returns></returns>
     public async Task Start()
     {
         if (started)
@@ -44,6 +51,9 @@ public sealed class MatrixChatroomWatcher : IDisposable
         timer = new Timer(FetchMessages, null, 100, 1000);
     }
 
+    /// <summary>
+    /// Stops the Watcher
+    /// </summary>
     public void Stop()
     {
         if (!started)
@@ -76,11 +86,45 @@ public sealed class MatrixChatroomWatcher : IDisposable
                             .PostJsonAsync(body);
     }
 
+    /// <summary>
+    /// Gets a specific message from the watched room
+    /// </summary>
+    /// <param name="eventId">Event ID of the message to get</param>
+    /// <returns>The message object</returns>
     public async Task<dynamic> GetMessage(string eventId)
         => (await $"{_homeserverUrl}/_matrix/client/v3/rooms/{_roomId}/event/{eventId}?access_token={_authToken}"
                .GetAsync()
                .ReceiveJson())
                .content;
+
+    /// <summary>
+    /// Sends a Reacton ('annotation') to a specific message in the watched room
+    /// </summary>
+    /// <param name="eventId">Event ID of the message to react to</param>
+    /// <param name="emoji">The reaction emoji</param>
+    public async Task SendReaction(string eventId, string emoji)
+    {
+        using var stream = new MemoryStream();
+        using var json = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true, SkipValidation = false });
+        json.WriteStartObject();
+        json.WriteStartObject("m.relates_to");
+        json.WritePropertyName("rel_type");
+        json.WriteStringValue("m.annotation");
+        json.WritePropertyName("event_id");
+        json.WriteStringValue(eventId);
+        json.WritePropertyName("key");
+        json.WriteStringValue(emoji);
+        json.WriteEndObject();
+        json.WriteEndObject();
+        json.Flush();
+
+        stream.Seek(0, SeekOrigin.Begin);
+        using var reader = new StreamReader(stream);
+        var body = reader.ReadToEnd();
+
+        await $"{_homeserverUrl}/_matrix/client/v3/rooms/{_roomId}/send/m.reaction?access_token={_authToken}"
+                            .PostStringAsync(body);
+    }
 
     public void Dispose()
         => timer?.Dispose();
