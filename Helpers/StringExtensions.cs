@@ -63,4 +63,13 @@ public static class StringExtensions
             SizeSuffixes[mag]);
     }
 
+    public static string FormatRating(this int? rating)
+        => rating switch
+        {
+            null => "",
+            < 1 => "",
+            < 5 => "⭐".Repeat(rating.Value),
+            >= 5 => "🌟".Repeat(5),
+        };
+
 }
