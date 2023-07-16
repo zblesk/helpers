@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace zblesk.Helpers;
 /// <summary>
 /// A hash class that can persist its contents between program runs in a JSON file. Mostly intended for debugging/one-off tasks.
 /// </summary>
-public sealed class FileBackedDictionary<TKey, TValue> where TKey : notnull
+public sealed class FileBackedDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>> where TKey : notnull
 {
     private readonly Dictionary<TKey, TValue> _dict;
     private readonly string _fileName;
@@ -48,7 +49,7 @@ public sealed class FileBackedDictionary<TKey, TValue> where TKey : notnull
     public bool Contains(TKey item) => _dict.ContainsKey(item);
 
     public int Count() => _dict.Count;
-   
+
     public TValue this[TKey key]
     {
         get => _dict[key];
@@ -61,4 +62,11 @@ public sealed class FileBackedDictionary<TKey, TValue> where TKey : notnull
             }
         }
     }
+
+    public IEnumerable<TKey> Keys => _dict.Keys;
+
+    public IEnumerable<TValue> Values => _dict.Values;
+
+    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => _dict.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => _dict.GetEnumerator();
 }
