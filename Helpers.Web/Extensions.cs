@@ -19,8 +19,8 @@ public static class Extensions
             role = new IdentityRole(roleName);
             await roleManager.CreateAsync(role);
             if (claims?.Length > 0)
-                Task.WaitAll(
-                    claims.Select(claim => roleManager.AddClaimAsync(role, claim)).ToArray());
+                foreach (var claim in claims)
+                    await roleManager.AddClaimAsync(role, claim);
         }
     }
 }
