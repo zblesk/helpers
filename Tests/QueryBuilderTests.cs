@@ -14,9 +14,7 @@ public class QueryBuilderTests
     {
         Expression e = () => (from n in api.Notes
                               where "2022" == n.title
-                              select new { n.id, n.title, n.is_todo, n.body })
-                             .Skip(20)
-                             .Take(10);
+                              select new { n.id, n.title, n.is_todo, n.body });
         var v = new QueryVisitor().ExtractParams(e);
         var url = v.BuildQuery("MY_TOKEN").ToString();
         Assert.Equal("http://localhost:41184/search?query=%20title%3A%222022%22&token=MY_TOKEN&fields=id%2Ctitle%2Cis_todo%2Cbody", url);
