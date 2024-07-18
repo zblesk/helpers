@@ -14,13 +14,14 @@
     <Description>My collection oft-used helpers.</Description>
     <PackageProjectUrl>https://github.com/zblesk/helpers</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zblesk/helpers</RepositoryUrl>
-    <Version>1.4.1</Version>
+    <Version>1.4.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="flurl" Version="3.0.7" />
-    <PackageReference Include="flurl.http" Version="3.2.4" />
-    <PackageReference Include="markdig" Version="0.31.0" />
+    <PackageReference Include="flurl" Version="4.0.0" />
+    <PackageReference Include="flurl.http" Version="4.0.2" />
+    <PackageReference Include="markdig" Version="0.37.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 </Project>

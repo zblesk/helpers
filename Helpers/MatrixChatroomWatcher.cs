@@ -94,7 +94,7 @@ public sealed class MatrixChatroomWatcher : IDisposable
     public async Task<dynamic> GetMessage(string eventId)
         => (await $"{_homeserverUrl}/_matrix/client/v3/rooms/{_roomId}/event/{eventId}?access_token={_authToken}"
                .GetAsync()
-               .ReceiveJson())
+               .ReceiveJson<dynamic>())
                .content;
 
     /// <summary>
@@ -132,7 +132,7 @@ public sealed class MatrixChatroomWatcher : IDisposable
     private async Task InitializeSync()
     {
         var res = await $"{_homeserverUrl}/_matrix/client/v3/sync?access_token={_authToken}"
-                            .GetJsonAsync();
+                            .GetJsonAsync<dynamic>();
         resumeToken = res.next_batch;
     }
 
@@ -141,7 +141,7 @@ public sealed class MatrixChatroomWatcher : IDisposable
         var request = $"{_homeserverUrl}/_matrix/client/v3/sync?access_token={_authToken}"
                         .SetQueryParam("timeout", 10)
                         .SetQueryParam("since", resumeToken)
-                        .GetJsonAsync();
+                        .GetJsonAsync<dynamic>();
         request.Wait();
         var response = request.Result;
         resumeToken = response.next_batch;

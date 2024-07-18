@@ -45,7 +45,7 @@ public class JoplinApi
         do
         {
             var response = await MakePagedUrl("folders", ++page)
-                .GetJsonAsync();
+                .GetJsonAsync<dynamic>();
             cont = (bool)response.has_more;
             foreach (var ntb in response.items)
             {
@@ -68,7 +68,7 @@ public class JoplinApi
             .SetQueryParam("fields", searchCriteria.fields)
             .SetQueryParam("type", searchCriteria.searchType);
         Console.WriteLine(url);
-        var q = url.GetJsonAsync();
+        var q = url.GetJsonAsync<dynamic>();
         q.Wait();
 
         var r = new List<T>();

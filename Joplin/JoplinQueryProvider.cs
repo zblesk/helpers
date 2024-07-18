@@ -44,7 +44,7 @@ public class JoplinQueryProvider : IQueryProvider
     {
         var param = _visitor.ExtractParams(expression);
         var url = _joplinApi.BuildQuery(param);
-        var promise = url.GetJsonAsync();
+        var promise = url.GetJsonAsync<dynamic>();
         promise.Wait();
         var apiResult = promise.Result;
         var destinationType = param.ReturnType ?? param.queriedTypes.First();
@@ -76,7 +76,7 @@ public class JoplinQueryProvider : IQueryProvider
                         if (@continue)
                         {
                             page++;
-                            promise = _joplinApi.BuildQuery(param, page).GetJsonAsync();
+                            promise = _joplinApi.BuildQuery(param, page).GetJsonAsync<dynamic>();
                             promise.Wait();
                             apiResult = promise.Result;
                         }
