@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Dynamic;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Markdig;
 
 namespace zblesk.Helpers;
@@ -20,7 +21,7 @@ public sealed class MatrixChatroomWatcher : IDisposable
     private bool started = false;
     private Timer? timer;
 
-    public delegate void MessageCallback(dynamic message);
+    public delegate void MessageCallback(JsonNode message);
 
     /// <summary>
     /// This event is called for each received room event.
@@ -132,8 +133,8 @@ public sealed class MatrixChatroomWatcher : IDisposable
     private async Task InitializeSync()
     {
         var res = await $"{_homeserverUrl}/_matrix/client/v3/sync?access_token={_authToken}"
-                            .GetJsonAsync<dynamic>();
-        resumeToken = res.next_batch;
+                            .GetJsonAsync<JsonObject>();
+        resumeToken = (string?)res?["next_batch"] ?? "";
     }
 
     private void FetchMessages(object? state)
@@ -141,21 +142,23 @@ public sealed class MatrixChatroomWatcher : IDisposable
         var request = $"{_homeserverUrl}/_matrix/client/v3/sync?access_token={_authToken}"
                         .SetQueryParam("timeout", 10)
                         .SetQueryParam("since", resumeToken)
-                        .GetJsonAsync<dynamic>();
+                        .GetJsonAsync<JsonObject>();
         request.Wait();
         var response = request.Result;
-        resumeToken = response.next_batch;
-        if (((IDictionary<string, dynamic>)response).ContainsKey("rooms"))
+        resumeToken = (string?)response["next_batch"] ?? "";
+        if (response.ContainsKey("rooms"))
         {
-            var r = (IDictionary<string, dynamic>)response.rooms.join;
-            if (r.ContainsKey(_roomId))
+            var r = response?["rooms"]?["join"];
+            if (r != null
+                && r.ToString().Contains(_roomId))
             {
-                var events = r[_roomId]?.timeline?.events;
+                var events = (JsonArray?)r[_roomId]?["timeline"]?["events"];
                 if (events == null)
                     return;
                 foreach (var roomEvent in events)
                 {
-                    if (roomEvent.sender != _username)
+                    if (roomEvent == null) continue;
+                    if (roomEvent["sender"]?.ToString() != _username)
                         NewMessageReceived?.Invoke(roomEvent);
                 }
             }

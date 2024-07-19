@@ -14,7 +14,7 @@
     <Description>My collection oft-used helpers.</Description>
     <PackageProjectUrl>https://github.com/zblesk/helpers</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zblesk/helpers</RepositoryUrl>
-    <Version>1.4.2</Version>
+    <Version>1.5.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
