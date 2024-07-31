@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Dynamic;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using Markdig;
 
@@ -92,11 +90,10 @@ public sealed class MatrixChatroomWatcher : IDisposable
     /// </summary>
     /// <param name="eventId">Event ID of the message to get</param>
     /// <returns>The message object</returns>
-    public async Task<dynamic> GetMessage(string eventId)
-        => (await $"{_homeserverUrl}/_matrix/client/v3/rooms/{_roomId}/event/{eventId}?access_token={_authToken}"
-               .GetAsync()
-               .ReceiveJson<dynamic>())
-               .content;
+    public async Task<JsonObject> GetMessageContent(string eventId)
+        => (JsonObject)(await $"{_homeserverUrl}/_matrix/client/v3/rooms/{_roomId}/event/{eventId}?access_token={_authToken}"
+               .GetJsonAsync<JsonObject>())
+               ["content"]!;
 
     /// <summary>
     /// Sends a Reacton ('annotation') to a specific message in the watched room
