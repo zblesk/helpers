@@ -66,24 +66,16 @@ public sealed class MatrixChatroomWatcher : IDisposable
     /// </summary>
     /// <param name="message">Message to send</param>
     /// <param name="renderMarkdown">True if the message is in MD and should be rendered before sending.</param>
-    public async Task SendMessage(string message, bool renderMarkdown = true)
-    {
-        object body = new
-        {
-            msgtype = "m.text",
-            body = message,
-        };
-        if (renderMarkdown)
-            body = new
-            {
-                msgtype = "m.text",
-                body = message,
-                format = "org.matrix.custom.html",
-                formatted_body = Markdown.ToHtml(message),
-            };
-        await $"{_homeserverUrl}/_matrix/client/r0/rooms/{_roomId}/send/m.room.message?access_token={_authToken}"
-                            .PostJsonAsync(body);
-    }
+    public Task SendMessage(string message, bool renderMarkdown = true)
+        => SendGenericMessage(message, "m.text", renderMarkdown);
+
+    /// <summary>
+    /// Send a notice to the watched room
+    /// </summary>
+    /// <param name="message">Message to send</param>
+    /// <param name="renderMarkdown">True if the message is in MD and should be rendered before sending.</param>
+    public Task SendNotice(string message, bool renderMarkdown = true)
+        => SendGenericMessage(message, "m.notice", renderMarkdown);
 
     /// <summary>
     /// Gets a specific message from the watched room
@@ -126,6 +118,25 @@ public sealed class MatrixChatroomWatcher : IDisposable
 
     public void Dispose()
         => timer?.Dispose();
+
+    public async Task SendGenericMessage(string message, string msgType, bool renderMarkdown = true)
+    {
+        object body = new
+        {
+            msgtype = "m.text",
+            body = message,
+        };
+        if (renderMarkdown)
+            body = new
+            {
+                msgtype = msgType,
+                body = message,
+                format = "org.matrix.custom.html",
+                formatted_body = Markdown.ToHtml(message),
+            };
+        await $"{_homeserverUrl}/_matrix/client/r0/rooms/{_roomId}/send/m.room.message?access_token={_authToken}"
+                            .PostJsonAsync(body);
+    }
 
     private async Task InitializeSync()
     {
